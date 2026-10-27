@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Birthday Bhootni 🎂👻</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a0533 0%, #2d0a4e 40%, #1a0533 100%);
+      font-family: 'Lora', serif;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ===== STARS BACKGROUND ===== */
+    .stars { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: #fff;
+      animation: twinkle var(--dur, 3s) ease-in-out infinite alternate;
+      opacity: 0;
+    }
+    @keyframes twinkle { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1.2); } }
+
+    /* ===== FLOATING EMOJIS ===== */
+    .floaters { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+    .floater {
+      position: absolute;
+      font-size: clamp(1rem, 2.5vw, 1.8rem);
+      animation: floatUp linear infinite;
+      opacity: 0;
+    }
+    @keyframes floatUp {
+      0%   { opacity: 0; transform: translateY(100vh) rotate(0deg) scale(0.5); }
+      10%  { opacity: 1; }
+      90%  { opacity: 0.7; }
+      100% { opacity: 0; transform: translateY(-20vh) rotate(360deg) scale(1.2); }
+    }
+
+    /* ===== CONFETTI ===== */
+    .confetti-piece {
+      position: fixed;
+      top: -10px;
+      width: 10px; height: 20px;
+      border-radius: 2px;
+      animation: confettiFall linear forwards;
+      z-index: 999;
+      pointer-events: none;
+    }
+    @keyframes confettiFall {
+      0%   { transform: translateY(0) rotateZ(0deg) rotateX(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotateZ(720deg) rotateX(360deg); opacity: 0; }
+    }
+
+    /* ===== MAIN WRAPPER ===== */
+    #main { position: relative; z-index: 10; width: 100%; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem; }
+
+    /* ===== TITLE ===== */
+    .page-title {
+      font-family: 'Caveat', cursive;
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-weight: 700;
+      color: #ffd700;
+      text-align: center;
+      margin-bottom: 0.3rem;
+      text-shadow: 0 0 20px rgba(255,215,0,0.5), 0 2px 4px rgba(0,0,0,0.5);
+      animation: titlePop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+    .page-subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: clamp(1.1rem, 3vw, 1.6rem);
+      color: #ff9bcd;
+      text-align: center;
+      margin-bottom: 2.5rem;
+      animation: titlePop 0.8s 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+    @keyframes titlePop {
+      from { opacity: 0; transform: translateY(-30px) scale(0.8); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ===== ENVELOPE SCENE ===== */
+    #envelope-scene {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      cursor: pointer;
+    }
+
+    .envelope-wrapper {
+      position: relative;
+      width: clamp(220px, 40vw, 320px);
+      height: clamp(160px, 28vw, 230px);
+      transition: transform 0.3s;
+      filter: drop-shadow(0 8px 32px rgba(255,100,180,0.4));
+    }
+    .envelope-wrapper:hover { transform: scale(1.06) rotate(-2deg); }
+
+    /* Envelope body */
+    .env-body {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(160deg, #ffe0f7 0%, #ffb3e6 60%, #ff80cc 100%);
+      border-radius: 8px 8px 18px 18px;
+      border: 2.5px solid #ff55b8;
+      overflow: hidden;
+    }
+    /* Bottom triangle */
+    .env-bottom {
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 55%;
+      background: linear-gradient(180deg, #ff99dd 0%, #ff55b8 100%);
+      clip-path: polygon(0 100%, 50% 0%, 100% 100%);
+    }
+    /* Left flap */
+    .env-left {
+      position: absolute;
+      top: 0; left: 0;
+      width: 50%; height: 100%;
+      background: linear-gradient(135deg, #ffccee, #ff88cc);
+      clip-path: polygon(0 0, 100% 50%, 0 100%);
+    }
+    /* Right flap */
+    .env-right {
+      position: absolute;
+      top: 0; right: 0;
+      width: 50%; height: 100%;
+      background: linear-gradient(225deg, #ffccee, #ff88cc);
+      clip-path: polygon(100% 0, 0 50%, 100% 100%);
+    }
+    /* Top flap */
+    .env-flap {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 55%;
+      background: linear-gradient(180deg, #ffd6f0 0%, #ff99dd 100%);
+      clip-path: polygon(0 0, 50% 100%, 100% 0);
+      transform-origin: top center;
+      transition: transform 0.7s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+      z-index: 5;
+      border-bottom: 2px solid #ff77cc;
+    }
+    .envelope-wrapper.opened .env-flap {
+      transform: rotateX(180deg);
+    }
+
+    /* Wax seal */
+    .wax-seal {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 52px; height: 52px;
+      background: radial-gradient(circle at 40% 35%, #ff3366, #cc0044);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 12px rgba(200,0,60,0.5), inset 0 -3px 6px rgba(0,0,0,0.2);
+      z-index: 6;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .envelope-wrapper.opened .wax-seal { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+
+    /* Letter peeking */
+    .letter-peek {
+      position: absolute;
+      bottom: 20%; left: 10%;
+      width: 80%;
+      height: 70%;
+      background: #fffef5;
+      border-radius: 4px;
+      border: 1px solid #ffe4a0;
+      transform: translateY(100%);
+      transition: transform 0.8s 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      z-index: 4;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
+    }
+    .envelope-wrapper.opened .letter-peek { transform: translateY(0%); }
+
+    /* Click hint */
+    .click-hint {
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: #ff9bcd;
+      text-align: center;
+      animation: pulse 1.5s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
+    .click-hint.hidden { opacity: 0; transition: opacity 0.5s; }
+
+    /* ===== LETTER ===== */
+    #letter-container {
+      display: none;
+      max-width: min(760px, 95vw);
+      width: 100%;
+      animation: letterReveal 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+    #letter-container.visible { display: block; }
+    @keyframes letterReveal {
+      from { opacity: 0; transform: translateY(60px) scale(0.92); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .letter-paper {
+      background: linear-gradient(170deg, #fffef5 0%, #fff8e1 100%);
+      border-radius: 16px;
+      padding: clamp(1.5rem, 5vw, 3rem) clamp(1.5rem, 5vw, 3.5rem);
+      box-shadow:
+        0 20px 60px rgba(0,0,0,0.4),
+        0 0 0 2px #ffd700,
+        inset 0 1px 0 rgba(255,255,255,0.8);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative lines like real paper */
+    .letter-paper::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: repeating-linear-gradient(
+        transparent,
+        transparent 27px,
+        rgba(180,180,255,0.15) 27px,
+        rgba(180,180,255,0.15) 28px
+      );
+      pointer-events: none;
+    }
+    /* Left margin line */
+    .letter-paper::after {
+      content: '';
+      position: absolute;
+      top: 0; left: clamp(3.5rem, 8vw, 5rem);
+      width: 1.5px; height: 100%;
+      background: rgba(255,150,150,0.3);
+      pointer-events: none;
+    }
+
+    /* Letter header */
+    .letter-header {
+      text-align: center;
+      margin-bottom: 1.8rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px dashed rgba(255,180,100,0.4);
+      position: relative;
+    }
+    .letter-header h1 {
+      font-family: 'Caveat', cursive;
+      font-size: clamp(1.6rem, 5vw, 2.6rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, #ff6b35, #ff3366, #cc00ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+      margin-bottom: 0.3rem;
+    }
+    .letter-header .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+      color: #888;
+      font-style: italic;
+    }
+
+    /* Letter body */
+    .letter-body {
+      font-size: clamp(0.95rem, 2.5vw, 1.08rem);
+      line-height: 1.9;
+      color: #2d2012;
+      position: relative;
+    }
+    .letter-body p { margin-bottom: 1.2rem; }
+    .letter-body p:last-child { margin-bottom: 0; }
+
+    /* Special highlighted lines */
+    .poetic {
+      font-style: italic;
+      color: #6a0dad;
+      font-size: 1.05em;
+      border-left: 3px solid #ff80cc;
+      padding-left: 1rem;
+      margin: 1.2rem 0 !important;
+    }
+
+    /* Emoji stickers */
+    .sticker {
+      display: inline-block;
+      font-size: 1.3em;
+      animation: stickerBounce 2s ease-in-out infinite;
+    }
+    @keyframes stickerBounce {
+      0%, 100% { transform: translateY(0) rotate(-5deg); }
+      50% { transform: translateY(-5px) rotate(5deg); }
+    }
+    .sticker:nth-child(even) { animation-delay: 0.5s; }
+
+    /* Sign-off */
+    .letter-footer {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 2px dashed rgba(255,180,100,0.4);
+      text-align: right;
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: #7b3f00;
+    }
+
+    /* Decorative corner hearts */
+    .corner-deco {
+      position: absolute;
+      font-size: 1.5rem;
+      opacity: 0.4;
+      animation: spin3d 6s linear infinite;
+    }
+    @keyframes spin3d { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .corner-deco.tl { top: 1rem; left: 1rem; }
+    .corner-deco.tr { top: 1rem; right: 1rem; }
+    .corner-deco.bl { bottom: 1rem; left: 1rem; }
+    .corner-deco.br { bottom: 1rem; right: 1rem; }
+
+    /* ===== BACK TO TOP ===== */
+    .back-top {
+      margin-top: 2rem;
+      margin-bottom: 3rem;
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+      color: #ff9bcd;
+      background: rgba(255,255,255,0.08);
+      border: 1.5px solid rgba(255,150,200,0.3);
+      border-radius: 50px;
+      padding: 0.6rem 1.6rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .back-top:hover { background: rgba(255,100,180,0.2); transform: translateY(-2px); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 480px) {
+      .letter-paper::after { left: 2.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Stars -->
+<div class="stars" id="stars"></div>
+<!-- Floating emojis -->
+<div class="floaters" id="floaters"></div>
+
+<div id="main">
+  <div class="page-title">🎂 Happy Birthday, Arshita! 👻</div>
+  <div class="page-subtitle">aka Bhootni &amp; the don of our group 😁</div>
+
+  <!-- ENVELOPE -->
+  <div id="envelope-scene" onclick="openEnvelope()">
+    <div class="envelope-wrapper" id="envelope">
+      <div class="env-body">
+        <div class="env-left"></div>
+        <div class="env-right"></div>
+        <div class="env-bottom"></div>
+        <div class="letter-peek"></div>
+        <div class="env-flap"></div>
+        <div class="wax-seal">💌</div>
+      </div>
+    </div>
+    <div class="click-hint" id="click-hint">✨ Click to open your letter ✨</div>
+  </div>
+
+  <!-- LETTER -->
+  <div id="letter-container">
+    <div class="letter-paper">
+      <!-- Corner decorations -->
+      <span class="corner-deco tl">🌸</span>
+      <span class="corner-deco tr">✨</span>
+      <span class="corner-deco bl">💫</span>
+      <span class="corner-deco br">🌸</span>
+
+      <!-- Header -->
+      <div class="letter-header">
+        <h1>Happy Birthday 🎂 Arshita &amp; Bhootni 😁</h1>
+        <div class="subtitle">One more year close to dreams ❤️</div>
+      </div>
+
+      <!-- Body -->
+      <div class="letter-body">
+
+        <p>Well you are 19 now, aur agla saal tum log bhi vintage 20s knock kroge <span class="sticker">😂</span></p>
+
+        <p>But yarr genuinely no words like abhi kuch samajh nahi aa raha kya likhu kyunki kuch cheezein samne bolna ya kehna bada mushkil hota hai, to socha ek message ke format mein koshish kar hi sakta hoon. Well yeh message thoda pehle hi likh liya hoga maine — tujhe tera birthday gift mil jaayega isse pehle. Main gift deta hua ek baar to bolunga ki isko <strong>28 ko hi kholna</strong> taaki tu mera yeh message padhne ke baad use khole, because its my first time selecting something heheh — but yeh main jaanta hoon tu khol hi degi, patience kahan hai itni <span class="sticker">😂</span></p>
+
+        <p>Well genuinely yarr, pata hi nahi laga — its almost <strong>1 year 3 months</strong> of our friendship and I think it was the best moment in the last 2 years, meeting you and Mehak (Chutki) of course <span class="sticker">💕</span></p>
+
+        <p>Well genuinely jab main is college mein aaya tab kabhi nahi socha tha ki yeh itna bada impact karega meri life pe. But yeah, it was a cool 1 year. Ek trip with you guys, infact 1st trip in my last few years with classmates — it was so fun! Main abhi bhi kabhi kabhi woh purani photos dekhta hoon trips ki <span class="sticker">😂</span> Purani to aisa bol raha hoon jaise 20 saal ho gaye hain — its only 6–7 months — but yeah it was pure fun yarr, and hope so absence of Mehak doesn't ruin our next trip. Baki tum logon ki marzi hai, but I genuinely want to spend more time with you guys and know everyone well. Let's hope it comes true <span class="sticker">🤞</span></p>
+
+        <p>Yarr jahan tak baat hai, kaafi baatein jo main jaanta hoon — mujhe meri ajeeb lagti hongi na? Like main kabhi kabhi dost bolke bhi jhooth bol deta hoon <span class="sticker">😆</span> Main bhi sochta hoon ki chapati kyun hoon yarr, but fact hai yarr mujhe past se ab ajeeb lagta hai aur main kisi ko saari baatein batane se bahut darta hoon. Like bahut... ultimately mujhe lagta hai, phir bataya, acha dost bana, phir khatam — log chale jaate hain. <strong>Hope tum log naa jaao.</strong> <span class="sticker">🥺</span></p>
+
+        <p>Well yarr infact ek cheez zaroor kehna chahungaa — agar kabhi bhi main kuch galat karta hoon yarr, muh pe bol diya karo. Kuch bhi. Mujhe hurt ya bura nahi lagta yarr, itna mat socha karo. Infact mujhe accha lagta hai ki log mujhe change karne ki koshish karte hain aur ek accha insaan banane ki koshish karte hain. Well woh to tum logon pe hai ab. For my side — <em>I never ask in return. If you did, I will do. If you didn't, I will still do. Not matter how far we are.</em></p>
+
+        <p>Well thoda likhte likhte off topic chala gaya <span class="sticker">😭😭</span></p>
+
+        <p>Har baar ki aadat hai, kuch zyada hi irritate karta hoon, ajeeb baatein karta hoon yarr — mujhe khud ajeeb lagti hain. Agar main sach ka bolun to main chup hi ho jaata hoon <span class="sticker">🤣</span> well who cares, not me hehhe.</p>
+
+        <p>Well yarr ek cheez — recently mera nature thoda ajeeb sa ho gaya hai, especially 2nd year mein. Well yeh sab kuch personal life experiences ke kaaran hua hai jo main kahunga accha hai khatam ho gaya, aur ab train normal track pe aayegi. Ek to aajkal ki reels demotivate karti hain raat ko — "jisko aap priority maante ho, kya woh aapko priority maanta hai?" — I mean wth <span class="sticker">🤦‍♂️</span> aur main gadha usse bhi sochne lag jaata hoon yarr. Well chalo chodo — yeh baat kabhi saath mein baith ke hogi, aise message mein bahut lambi chal jaayegi.</p>
+
+        <p>Ohhh!! Wait mujhe idea aaya — website bana dunga heheh <span class="sticker">😂</span> taaki itna saara likh sakun, Instagram pe nahi aayega. And haan, kisi aur ko mat bhejna especially Mehak <span class="sticker">😠</span> Kahi woh bhi padh rahi ho — well agar padh bhi rahi ho to <strong>"Hello Mehak 👋"</strong> — DM mein reply kar dena mujhe uska.</p>
+
+        <p>Well but yarr genuinely, bada mazaa aaya tum dono se milke. And yaar, ek baat aur — I don't think I've ever properly told you this, but <em>I genuinely appreciate the kind of person you are.</em> The way you make normal moments memorable, the way we can joke around over the most random things, and how comfortable our friendship has become means a lot to me. Maybe main har baar express nahi kar pata, but that doesn't mean I don't value it. I'm genuinely glad ki college mein tumse mila, aur I hope life tumhe woh sab de jo tum deserve karti ho. <span class="sticker">❤️</span></p>
+
+        <p>Well infact first time hai bina socha hi type karta ja raha hoon <span class="sticker">😂</span></p>
+
+        <p>But really yarr — past 2 years mein best things jo hua woh hai meeting Chutki and Bhootni. [And also Gulabo also <span class="sticker">😂</span> use kaise bhool sakta hoon — like woh banda bada mazedaar hai yarr, isliye uske saath hoon. Pata nahi kyun dil se tum logon ka best friend maanta hoon. But yeah he is one too!]</p>
+
+        <p>Ab baki ki baatein kabhi aur — abhi Happy Birthday <span class="sticker">🎂</span> 🥳 3rd time ya 4th time, main remember nahi karta <span class="sticker">🤓😭</span></p>
+
+        <hr style="border:none;border-top:2px dashed rgba(255,180,100,0.3);margin:1.5rem 0;" />
+
+        <p class="poetic">In fact I am the type of person who doesn't measure our friendship by whether I'm always the first person you call or the person you spend the most time with. What we have doesn't need to compete to be meaningful. I love that our friendship has room for other people too.</p>
+
+        <p class="poetic">And I hope your life keeps bringing you wonderful people to love, laugh with, and grow beside — because someone else becoming important to you will never make you less important to me.</p>
+
+        <p>I know I irritate you sometimes, I tease you without reason, I act childish, I get angry — but deep inside I know our bond is stronger than these small fights.</p>
+
+        <p class="poetic">With you, I don't have to pretend.<br/>
+        I don't have to hide my tears.<br/>
+        I don't have to fake a smile.<br/>
+        — and that is the most beautiful feeling in this world.</p>
+
+        <p class="poetic">I don't want a thousand friends,<br/>
+        I don't want a big circle,<br/>
+        I just want one person who stays — <strong>and that person is you.</strong></p>
+
+        <p>No matter where life takes us, no matter how busy we become, promise me we will always find our way back to this pure, honest friendship.</p>
+
+        <p>Because having you in my life is one of the biggest blessings I will forever be thankful for.</p>
+
+        <p class="poetic">You are not just my best friend...<br/>
+        <strong>You are my forever person.</strong> <span class="sticker">🫶</span></p>
+
+        <hr style="border:none;border-top:2px dashed rgba(255,180,100,0.3);margin:1.5rem 0;" />
+
+        <p>Tujhe tang karne mein jo mazaa aata hai na mujhe, woh kisi aur ki tang kheenchne mein nahi aata <span class="sticker">😂</span></p>
+
+        <p>But jokes apart, thank you for being such a genuine friend. Kabhi kabhi ajeeb lagti hai lakin overall you guys are the best <span class="sticker">👌</span></p>
+
+        <p>May your life be full of happiness, crazy memories, and endless smiles. Stay the same cute, annoying, and amazing Bhootni and infact don of our group that we all love. <strong>Once again, Happy Birthday Bhootni! 🥳</strong></p>
+
+        <hr style="border:none;border-top:2px dashed rgba(255,180,100,0.3);margin:1.5rem 0;" />
+
+        <p>Isse zyada likh nahi sakta — thak gaya <span class="sticker">😭</span> Infact acha sa end karna bhi bhool gaya. Pata nahi kya kuch likh diya. Bas yahi bolunga — Hope you achieve all your dreams this year that you've dreamt of. Baki main aur woh choti bachi naak mein dum karne wala to hai hi <span class="sticker">😂</span></p>
+
+        <p>Chal ab sach mein khatam karta hoon, warna birthday message ke naam par poori autobiography likh dunga <span class="sticker">😂😭</span> Bas yahi hope karta hoon ki iss saal tere saare dreams dheere dheere poore hon, tu hamesha khush rahe, aur life tujhe bahut saari beautiful memories de.</p>
+
+        <p>Aur haan, <strong>next trip ka plan cancel mat karwana</strong> — mujhe genuinely tum sabke saath aur memories banani hain. Hopefully iss baar sab saath mein honge. <span class="sticker">❤️</span></p>
+
+        <p>Stay the same cute, annoying, dramatic Bhootni and the don of our group. <span class="sticker">😂</span> <span class="sticker">🫶</span></p>
+
+        <p><strong>Happy Birthday once again, Arshita!</strong> Thank you for being a part of some of my favourite memories. I hope we make many more together. <span class="sticker">❤️</span> <span class="sticker">🎂</span></p>
+
+        <p>Ab bas, jaa gift khol le... agar itna patience bacha hai toh. <span class="sticker">😂😭</span></p>
+
+        <p style="text-align:center;font-size:1.8rem;margin-top:1rem;">At last — Happy Birthday Bhootni!!! 🫶</p>
+      </div>
+
+      <!-- Footer -->
+      <div class="letter-footer">
+        With love &amp; all the good vibes 💫<br/>
+        — Tera ajeeb sa dost 😂
+      </div>
+    </div>
+
+    <div style="text-align:center;">
+      <button class="back-top" onclick="scrollToTop()">⬆ Wapas upar jao 😂</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ===== STARS ===== */
+  const starsContainer = document.getElementById('stars');
+  for (let i = 0; i < 120; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 3 + 1;
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      top:${Math.random()*100}%;
+      left:${Math.random()*100}%;
+      --dur:${(Math.random()*4+2).toFixed(1)}s;
+      animation-delay:${(Math.random()*5).toFixed(1)}s;
+    `;
+    starsContainer.appendChild(s);
+  }
+
+  /* ===== FLOATING EMOJIS ===== */
+  const emojis = ['🎂','🥳','🎉','✨','💫','❤️','🌸','🎈','🎊','💕','🫶','🌟','🍰','🎁','🦋','🌺','💖','🎵','🌈','👻'];
+  const floatersContainer = document.getElementById('floaters');
+
+  function createFloater() {
+    const el = document.createElement('div');
+    el.className = 'floater';
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    const duration = Math.random() * 8 + 6;
+    const delay = Math.random() * 5;
+    el.style.cssText = `
+      left:${Math.random()*100}%;
+      animation-duration:${duration}s;
+      animation-delay:${delay}s;
+      font-size:${(Math.random()*1.2+0.8).toFixed(1)}rem;
+    `;
+    floatersContainer.appendChild(el);
+    setTimeout(() => el.remove(), (duration + delay + 1) * 1000);
+  }
+
+  setInterval(createFloater, 400);
+  for (let i = 0; i < 15; i++) setTimeout(createFloater, i * 200);
+
+  /* ===== CONFETTI ===== */
+  const confettiColors = ['#ff3366','#ffd700','#00cfff','#ff80cc','#a855f7','#22c55e','#f97316'];
+
+  function shootConfetti(count = 80) {
+    for (let i = 0; i < count; i++) {
+      setTimeout(() => {
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        el.style.cssText = `
+          left:${Math.random()*100}%;
+          background:${confettiColors[Math.floor(Math.random()*confettiColors.length)]};
+          width:${Math.random()*10+5}px;
+          height:${Math.random()*18+8}px;
+          border-radius:${Math.random()>0.5?'50%':'2px'};
+          animation-duration:${(Math.random()*3+2).toFixed(1)}s;
+          animation-delay:${(Math.random()*0.5).toFixed(2)}s;
+        `;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 6000);
+      }, i * 30);
+    }
+  }
+
+  /* ===== ENVELOPE OPEN ===== */
+  let opened = false;
+
+  function openEnvelope() {
+    if (opened) return;
+    opened = true;
+
+    const envelope = document.getElementById('envelope');
+    const hint = document.getElementById('click-hint');
+    const letter = document.getElementById('letter-container');
+
+    envelope.classList.add('opened');
+    hint.classList.add('hidden');
+
+    // After flap opens, show letter
+    setTimeout(() => {
+      letter.classList.add('visible');
+      shootConfetti(120);
+      // Smooth scroll to letter
+      setTimeout(() => {
+        letter.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 400);
+    }, 900);
+  }
+
+  function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
