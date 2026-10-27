@@ -55,43 +55,6 @@
       pointer-events: none;
     }
 
-    /* Floating BGM Button */
-    .music-toggle {
-      position: fixed;
-      top: 18px;
-      right: 18px;
-      z-index: 100;
-      background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 50px;
-      padding: 8px 16px;
-      color: #fff;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .music-toggle:hover {
-      transform: translateY(-2px) scale(1.04);
-      background: rgba(255, 96, 170, 0.25);
-      border-color: var(--primary-pink);
-    }
-    .music-note {
-      display: inline-block;
-      animation: noteBounce 1.4s ease-in-out infinite;
-    }
-    @keyframes noteBounce {
-      0%, 100% { transform: translateY(0) rotate(0); }
-      50% { transform: translateY(-3px) rotate(12deg); }
-    }
-
     /* Cursor / Touch Sparkle Trail */
     .trail-sparkle {
       position: fixed;
@@ -471,51 +434,6 @@
       100% { transform: translateY(-120vh) rotate(15deg); opacity: 0; }
     }
 
-    /* Memory / Fun Stats Bar */
-    .stats-container {
-      width: min(780px, 94vw);
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
-      margin-bottom: 2rem;
-      animation: fadeSlideDown 0.8s ease both;
-    }
-    @keyframes fadeSlideDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .stat-pill {
-      background: rgba(255, 255, 255, 0.07);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 150, 200, 0.25);
-      border-radius: 18px;
-      padding: 12px 14px;
-      text-align: center;
-      transition: all 0.3s;
-    }
-    .stat-pill:hover {
-      background: rgba(255, 96, 170, 0.15);
-      border-color: var(--primary-pink);
-      transform: translateY(-3px);
-    }
-    .stat-value {
-      font-family: 'Caveat', cursive;
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--gold);
-      line-height: 1.1;
-    }
-    .stat-label {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: #ffb8dc;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
     /* The Main Parchment Letter */
     .parchment-letter {
       width: min(780px, 94vw);
@@ -559,26 +477,6 @@
       height: 100%;
       background: rgba(255, 140, 140, 0.3);
       pointer-events: none;
-    }
-
-    /* Post-it Note Pins */
-    .sticky-note {
-      position: absolute;
-      background: #fff885;
-      color: #333;
-      padding: 10px 14px;
-      border-radius: 2px 2px 10px 2px;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.18);
-      font-family: 'Reenie Beanie', cursive;
-      font-size: 1.3rem;
-      line-height: 1.1;
-      transform: rotate(var(--rot, -3deg));
-      z-index: 5;
-      border-top: 8px solid rgba(255, 230, 0, 0.7);
-    }
-    .sticky-note.top-right {
-      top: 18px;
-      right: 20px;
     }
 
     /* Letter Header */
@@ -805,12 +703,6 @@
 <!-- Background Starfield & Nebula Canvas -->
 <canvas id="bg-canvas"></canvas>
 
-<!-- Background Music Toggle (Web Audio API Synthesizer - Zero External Files!) -->
-<button class="music-toggle" id="music-toggle" title="Toggle Soft Lo-Fi Birthday Chime">
-  <span class="music-note">🎵</span>
-  <span id="music-state-text">Play Birthday Tune</span>
-</button>
-
 <!-- ===================== SCREEN 1: PASSWORD LOCK ===================== -->
 <div class="screen" id="screen-password">
   <div class="lock-card">
@@ -872,33 +764,8 @@
 <!-- ===================== SCREEN 3: THE MASTERPIECE LETTER ===================== -->
 <div id="screen-letter">
 
-  <!-- Interactive Friendship Stats -->
-  <div class="stats-container">
-    <div class="stat-pill">
-      <div class="stat-value">1 yr 3 mo</div>
-      <div class="stat-label">Friendship Bond</div>
-    </div>
-    <div class="stat-pill">
-      <div class="stat-value">9999%</div>
-      <div class="stat-label">Bhootni Drama Level</div>
-    </div>
-    <div class="stat-pill">
-      <div class="stat-value">0%</div>
-      <div class="stat-label">Gift Patience</div>
-    </div>
-    <div class="stat-pill">
-      <div class="stat-value">Forever</div>
-      <div class="stat-label">Best Friends</div>
-    </div>
-  </div>
-
   <!-- Main Parchment Letter Card -->
   <div class="parchment-letter">
-    <!-- Pinned Sticky Note -->
-    <div class="sticky-note top-right">
-      🎂 Level 19 Unlocked!<br/>
-      (Almost Vintage 20s 😂)
-    </div>
 
     <!-- Letter Header -->
     <div class="letter-title-section">
@@ -1096,84 +963,7 @@ window.addEventListener('touchmove', e => {
 }, { passive: true });
 
 /* ============================================================
-   3. WEB AUDIO API SYNTHESIZER (No Audio File Needed!)
-   Plays gentle sweet music box chime of Happy Birthday
-   ============================================================ */
-let audioCtx = null;
-let isMusicPlaying = false;
-let musicTimer = null;
-
-// Happy Birthday melody notes: [frequency, duration in seconds]
-const melody = [
-  [261.63, 0.4], [261.63, 0.3], [293.66, 0.7], [261.63, 0.7], [349.23, 0.7], [329.63, 1.2],
-  [261.63, 0.4], [261.63, 0.3], [293.66, 0.7], [261.63, 0.7], [392.00, 0.7], [349.23, 1.2],
-  [261.63, 0.4], [261.63, 0.3], [523.25, 0.7], [440.00, 0.7], [349.23, 0.7], [329.63, 0.7], [293.66, 0.9],
-  [466.16, 0.4], [466.16, 0.3], [440.00, 0.7], [349.23, 0.7], [392.00, 0.7], [349.23, 1.3]
-];
-
-function playTone(freq, duration) {
-  if (!audioCtx) return;
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-
-  osc.type = 'triangle'; // Sweet music-box like timbre
-  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-
-  gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-
-  osc.start();
-  osc.stop(audioCtx.currentTime + duration);
-}
-
-function playMagicalChime() {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  const chimeNotes = [523.25, 659.25, 783.99, 1046.50];
-  chimeNotes.forEach((f, idx) => {
-    setTimeout(() => playTone(f, 0.6), idx * 100);
-  });
-}
-
-function startBirthdayTune() {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  if (audioCtx.state === 'suspended') {
-    audioCtx.resume();
-  }
-
-  isMusicPlaying = true;
-  document.getElementById('music-state-text').textContent = 'Tune: Playing 🎶';
-
-  let currentNote = 0;
-  function scheduleNext() {
-    if (!isMusicPlaying) return;
-    const [freq, dur] = melody[currentNote];
-    playTone(freq, dur);
-    currentNote = (currentNote + 1) % melody.length;
-    musicTimer = setTimeout(scheduleNext, (dur + 0.08) * 1000);
-  }
-  scheduleNext();
-}
-
-function stopBirthdayTune() {
-  isMusicPlaying = false;
-  clearTimeout(musicTimer);
-  document.getElementById('music-state-text').textContent = 'Play Tune 🎵';
-}
-
-document.getElementById('music-toggle').addEventListener('click', () => {
-  if (isMusicPlaying) stopBirthdayTune();
-  else startBirthdayTune();
-});
-
-/* ============================================================
-   4. CELEBRATION CONFETTI
+   3. CELEBRATION CONFETTI
    ============================================================ */
 const confettiColors = ['#ff4081', '#ffd700', '#00e5ff', '#ff80ab', '#b388ff', '#76ff03', '#ff6e40'];
 function fireConfetti(count = 100) {
@@ -1195,7 +985,7 @@ function fireConfetti(count = 100) {
 }
 
 /* ============================================================
-   5. INTERACTIVE BALLOONS (TAP TO POP!)
+   4. INTERACTIVE BALLOONS (TAP TO POP!)
    ============================================================ */
 const balloonColors = ['🎈', '💖', '🌸', '🎁', '🎂'];
 function spawnBalloon() {
@@ -1207,10 +997,9 @@ function spawnBalloon() {
   const dur = Math.random() * 7 + 8;
   el.style.animationDuration = dur + 's';
 
-  // Tap to pop with sparkle & sound!
+  // Tap to pop with sparkle & confetti!
   el.addEventListener('click', function(e) {
     e.stopPropagation();
-    playTone(800 + Math.random() * 400, 0.2);
     fireConfetti(25);
     el.style.transform = 'scale(1.8)';
     el.style.opacity = '0';
@@ -1228,7 +1017,7 @@ function spawnBalloonsBatch(n = 6) {
 }
 
 /* ============================================================
-   6. SCREEN 1: PASSWORD VALIDATION
+   5. SCREEN 1: PASSWORD VALIDATION
    ============================================================ */
 const PASSWORD = 'bhootni';
 const pwInput = document.getElementById('pw-input');
@@ -1241,14 +1030,10 @@ function handleUnlock() {
   const val = pwInput.value.trim().toLowerCase();
   if (val === PASSWORD) {
     // Success!
-    playMagicalChime();
     lockWrap.classList.add('unlocked');
     btnUnlock.textContent = 'Unlocked! ✨';
     btnUnlock.style.background = '#2ed573';
     fireConfetti(120);
-
-    // Auto-start soft birthday tune
-    if (!isMusicPlaying) startBirthdayTune();
 
     setTimeout(() => {
       // Transition from Password to Envelope
@@ -1266,7 +1051,6 @@ function handleUnlock() {
     // Error shake
     pwError.textContent = val === '' ? 'Arre password toh daal do! 😂' : 'Galat password! Hint dekh lo 😏';
     pwInput.classList.add('error');
-    playTone(150, 0.3);
     setTimeout(() => pwInput.classList.remove('error'), 600);
   }
 }
@@ -1282,15 +1066,13 @@ hintBtn.addEventListener('click', () => {
 setTimeout(() => pwInput.focus(), 600);
 
 /* ============================================================
-   7. SCREEN 2: 3D ENVELOPE OPENING
+   6. SCREEN 2: 3D ENVELOPE OPENING
    ============================================================ */
 let envelopeHasOpened = false;
 
 function triggerOpenEnvelope() {
   if (envelopeHasOpened) return;
   envelopeHasOpened = true;
-
-  playMagicalChime();
 
   const seal = document.getElementById('env-wax-seal');
   const fold = document.getElementById('env-top-fold');
@@ -1337,7 +1119,7 @@ function triggerOpenEnvelope() {
 }
 
 /* ============================================================
-   8. EASTER EGGS & POPUPS
+   7. EASTER EGGS & POPUPS
    ============================================================ */
 const modal = document.getElementById('custom-modal');
 const modalEmoji = document.getElementById('modal-emoji');
@@ -1348,7 +1130,7 @@ const modalData = {
   mehak: {
     emoji: '😠👋',
     title: 'Hello Mehak!',
-    body: 'Pakdi gayi! Hum jaante hain tu bhi ye letter padh rahi hai 🤣 Ab chup-chap DM mein reply kar dena aur plan cancel mat karwana agla trip ka! 😂'
+    body: 'Pakdi gayi! Hum jaante hain tu bhi ye letter padh rahi hai 🤣 Ab chup-chap DM mein reply kar dena'
   },
   hint: {
     emoji: '💡',
@@ -1374,7 +1156,6 @@ function openModal(key) {
   modalTitle.textContent = d.title;
   modalBody.innerHTML = d.body;
   modal.classList.add('open');
-  playTone(550, 0.15);
 }
 
 function closeModal() {
