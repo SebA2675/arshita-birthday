@@ -2,33 +2,44 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>For Arshita 🎂</title>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Happy Birthday Arshita 🎂👻</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Dancing+Script:wght@600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Reenie+Beanie&display=swap" rel="stylesheet"/>
+
   <style>
     :root {
-      --pink: #ff6eb4;
-      --purple: #9b59b6;
-      --gold: #ffd700;
-      --deep: #0d0020;
-      --mid: #1a0035;
+      --primary-pink: #ff60aa;
+      --deep-purple: #100224;
+      --card-bg: #fffbf0;
+      --ink: #2b1f1d;
+      --gold: #f8c053;
+      --gold-dark: #b8860b;
+      --neon-glow: rgba(255, 96, 170, 0.45);
     }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html { scroll-behavior: smooth; }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
 
     body {
       min-height: 100vh;
-      background: var(--deep);
-      font-family: 'Inter', sans-serif;
-      overflow-x: hidden;
+      background: radial-gradient(circle at 50% 20%, #1e053a 0%, #0d011c 80%, #06000e 100%);
+      font-family: 'Lora', Georgia, serif;
       color: #fff;
+      overflow-x: hidden;
+      position: relative;
     }
+
     body.locked {
       overflow: hidden;
       height: 100vh;
     }
+
     body.reading {
       overflow-y: auto;
       overflow-x: hidden;
@@ -36,984 +47,1340 @@
       height: auto;
     }
 
-    /* ===== CANVAS PARTICLES ===== */
+    /* Ambient Background Canvas */
     #bg-canvas {
-      position: fixed; inset: 0; z-index: 0;
+      position: fixed;
+      inset: 0;
+      z-index: 0;
       pointer-events: none;
     }
 
-    /* ===== SCREENS ===== */
+    /* Floating BGM Button */
+    .music-toggle {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 50px;
+      padding: 8px 16px;
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .music-toggle:hover {
+      transform: translateY(-2px) scale(1.04);
+      background: rgba(255, 96, 170, 0.25);
+      border-color: var(--primary-pink);
+    }
+    .music-note {
+      display: inline-block;
+      animation: noteBounce 1.4s ease-in-out infinite;
+    }
+    @keyframes noteBounce {
+      0%, 100% { transform: translateY(0) rotate(0); }
+      50% { transform: translateY(-3px) rotate(12deg); }
+    }
+
+    /* Cursor / Touch Sparkle Trail */
+    .trail-sparkle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      animation: fadeShrink 0.8s forwards ease-out;
+      font-size: 14px;
+    }
+    @keyframes fadeShrink {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+      100% { opacity: 0; transform: translate(-50%, -80%) scale(0.2); }
+    }
+
+    /* =================== SCREENS =================== */
     .screen {
-      position: fixed; inset: 0; z-index: 10;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      transition: opacity 0.6s ease, transform 0.6s ease;
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .screen.hidden {
-      opacity: 0; pointer-events: none; transform: scale(0.96);
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.95);
       visibility: hidden;
     }
-    .screen.gone { display: none !important; }
+    .screen.gone {
+      display: none !important;
+    }
 
-    /* ===== SCREEN 1: PASSWORD ===== */
+    /* SCREEN 1: PASSWORD LOCK */
     #screen-password {
-      background: linear-gradient(135deg, #0d0020 0%, #1a0035 50%, #0d0020 100%);
-      padding: 2rem;
+      padding: 1.5rem;
+    }
+    .lock-card {
+      width: min(380px, 92vw);
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 150, 200, 0.25);
+      border-radius: 28px;
+      padding: 2.4rem 1.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 50px rgba(255, 96, 170, 0.15);
+      animation: cardAppear 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    @keyframes cardAppear {
+      from { opacity: 0; transform: translateY(40px) scale(0.92); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    .lock-wrap {
-      display: flex; flex-direction: column;
-      align-items: center; gap: 2rem;
-      animation: fadeSlideUp 1s ease both;
+    .badge-top {
+      background: linear-gradient(135deg, rgba(255, 96, 170, 0.25), rgba(155, 45, 122, 0.35));
+      border: 1px solid rgba(255, 120, 190, 0.4);
+      padding: 5px 14px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #ffb8dc;
+      margin-bottom: 1.2rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
-    /* Animated lock icon */
-    .lock-icon {
-      width: 90px; height: 90px;
+    .lock-icon-wrap {
+      width: 80px;
+      height: 80px;
       position: relative;
-      cursor: default;
-    }
-    .lock-body {
-      width: 70px; height: 55px;
-      background: linear-gradient(145deg, #ff6eb4, #9b2d7a);
-      border-radius: 12px;
-      position: absolute; bottom: 0; left: 10px;
-      box-shadow: 0 8px 30px rgba(255,110,180,0.5);
-      display: flex; align-items: center; justify-content: center;
-    }
-    .lock-body::after {
-      content: '';
-      width: 18px; height: 18px;
-      border-radius: 50%;
-      background: rgba(0,0,0,0.3);
-      position: absolute;
+      margin-bottom: 1rem;
     }
     .lock-shackle {
-      width: 40px; height: 40px;
-      border: 8px solid #ff6eb4;
+      width: 36px;
+      height: 36px;
+      border: 7px solid #ff72be;
       border-bottom: none;
-      border-radius: 30px 30px 0 0;
-      position: absolute; top: 0; left: 25px;
-      transform-origin: bottom center;
-      transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      box-shadow: 0 -4px 15px rgba(255,110,180,0.4);
+      border-radius: 24px 24px 0 0;
+      position: absolute;
+      top: 2px;
+      left: 22px;
+      transform-origin: bottom right;
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    .lock-icon.unlocked .lock-shackle {
-      transform: rotate(-40deg) translateX(-10px);
+    .lock-body-box {
+      width: 64px;
+      height: 50px;
+      background: linear-gradient(145deg, #ff60aa, #b32777);
+      border-radius: 16px;
+      position: absolute;
+      bottom: 2px;
+      left: 8px;
+      box-shadow: 0 10px 25px rgba(255, 96, 170, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .lock-pulse {
-      position: absolute; inset: -10px;
-      border-radius: 50%;
-      border: 2px solid rgba(255,110,180,0.3);
-      animation: lockPulse 2s ease-in-out infinite;
+    .keyhole {
+      width: 12px;
+      height: 18px;
+      background: #3e0724;
+      border-radius: 6px 6px 4px 4px;
     }
-    @keyframes lockPulse {
-      0%, 100% { transform: scale(1); opacity: 0.5; }
-      50% { transform: scale(1.3); opacity: 0; }
+    .lock-icon-wrap.unlocked .lock-shackle {
+      transform: rotate(45deg) translateY(-8px);
     }
 
-    .pw-title {
+    .lock-title {
       font-family: 'Caveat', cursive;
-      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-size: 2.3rem;
       font-weight: 700;
-      text-align: center;
-      background: linear-gradient(135deg, #ff6eb4, #ffd700, #ff6eb4);
-      background-size: 200% auto;
+      background: linear-gradient(135deg, #fff, #ffd6ea, #f8c053);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: shimmer 3s linear infinite;
+      margin-bottom: 0.2rem;
     }
-    @keyframes shimmer { to { background-position: 200% center; } }
-
-    .pw-hint {
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.4);
-      font-style: italic;
-      text-align: center;
-      margin-top: -1rem;
+    .lock-desc {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.65);
+      margin-bottom: 1.5rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
-    /* Text input */
-    .pw-input-box {
-      width: min(300px, 88vw);
-      padding: 0.9rem 1.4rem;
-      background: rgba(255,255,255,0.06);
-      border: 2px solid rgba(255,110,180,0.4);
+    .input-group {
+      width: 100%;
+      position: relative;
+      margin-bottom: 1rem;
+    }
+    .pw-input-field {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      border: 2px solid rgba(255, 120, 190, 0.3);
       border-radius: 50px;
+      padding: 14px 20px;
       color: #fff;
-      font-size: 1.3rem;
-      font-family: 'Caveat', cursive;
-      letter-spacing: 0.2em;
+      font-size: 1.15rem;
       text-align: center;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      letter-spacing: 0.15em;
       outline: none;
-      transition: border-color 0.3s, box-shadow 0.3s;
-      backdrop-filter: blur(10px);
+      transition: all 0.3s;
     }
-    .pw-input-box::placeholder { color: rgba(255,255,255,0.25); font-size: 1rem; letter-spacing: 0; }
-    .pw-input-box:focus {
-      border-color: var(--pink);
-      box-shadow: 0 0 20px rgba(255,110,180,0.3);
+    .pw-input-field:focus {
+      border-color: var(--primary-pink);
+      box-shadow: 0 0 25px rgba(255, 96, 170, 0.4);
+      background: rgba(0, 0, 0, 0.5);
     }
-    .pw-input-box.error {
-      border-color: #ff5555;
-      box-shadow: 0 0 20px rgba(255,50,50,0.3);
+    .pw-input-field.error {
+      border-color: #ff4757;
+      animation: shake 0.5s ease;
+      box-shadow: 0 0 20px rgba(255, 71, 87, 0.4);
     }
-
-    /* Submit button */
-    .pw-submit {
-      padding: 0.8rem 2.5rem;
-      background: linear-gradient(135deg, #ff6eb4, #9b2d7a);
-      border: none;
-      border-radius: 50px;
-      color: #fff;
-      font-family: 'Caveat', cursive;
-      font-size: 1.3rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 4px 20px rgba(255,110,180,0.4);
-      letter-spacing: 0.05em;
-    }
-    .pw-submit:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(255,110,180,0.5); }
-    .pw-submit:active { transform: scale(0.96); }
-
-    /* Error shake */
-    .shake { animation: shake 0.5s ease; }
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
-      20% { transform: translateX(-12px); }
-      40% { transform: translateX(12px); }
-      60% { transform: translateX(-8px); }
-      80% { transform: translateX(8px); }
-    }
-    .pw-error {
-      font-family: 'Caveat', cursive;
-      font-size: 1.1rem;
-      color: #ff5555;
-      min-height: 1.4rem;
-      text-align: center;
+      20%, 60% { transform: translateX(-10px); }
+      40%, 80% { transform: translateX(10px); }
     }
 
-    /* ===== SCREEN 2: ENVELOPE ===== */
-    #screen-envelope {
-      background: transparent;
-      padding: 2rem;
-    }
-    #screen-envelope .inner {
-      display: flex; flex-direction: column;
-      align-items: center; gap: 1.5rem;
+    .pw-error-text {
+      height: 1.2rem;
+      font-size: 0.85rem;
+      color: #ff6b81;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin-bottom: 0.8rem;
     }
 
-    .env-title {
-      font-family: 'Caveat', cursive;
-      font-size: clamp(2rem, 6vw, 3.2rem);
+    .btn-unlock {
+      width: 100%;
+      background: linear-gradient(135deg, #ff60aa 0%, #d4227f 50%, #901353 100%);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 14px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1rem;
       font-weight: 700;
-      text-align: center;
-      color: var(--gold);
-      text-shadow: 0 0 30px rgba(255,215,0,0.4);
-      animation: fadeSlideUp 0.8s ease both;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(212, 34, 127, 0.45);
+      transition: all 0.3s;
     }
-    .env-subtitle {
-      font-family: 'Caveat', cursive;
-      font-size: 1.3rem;
-      color: var(--pink);
-      text-align: center;
-      animation: fadeSlideUp 0.8s 0.15s ease both;
+    .btn-unlock:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 35px rgba(212, 34, 127, 0.6);
+    }
+    .btn-unlock:active {
+      transform: scale(0.97);
     }
 
-    /* 3D Envelope */
-    .envelope-scene {
-      perspective: 800px;
+    .hint-btn {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 0.8rem;
+      margin-top: 1rem;
       cursor: pointer;
-      animation: fadeSlideUp 0.8s 0.3s ease both;
+      text-decoration: underline;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: color 0.2s;
     }
-    .envelope-3d {
-      width: clamp(240px, 45vw, 340px);
-      height: clamp(170px, 30vw, 240px);
+    .hint-btn:hover { color: #ffb8dc; }
+
+    /* SCREEN 2: 3D ENVELOPE */
+    #screen-envelope {
+      padding: 1.5rem;
+    }
+    .env-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      text-align: center;
+    }
+    .env-top-tag {
+      font-family: 'Caveat', cursive;
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      color: var(--gold);
+      text-shadow: 0 0 20px rgba(248, 192, 83, 0.5);
+      margin-bottom: -0.5rem;
+    }
+    .env-subtag {
+      font-family: 'Caveat', cursive;
+      font-size: 1.35rem;
+      color: #ff9ec9;
+    }
+
+    .envelope-3d-scene {
+      perspective: 1000px;
+      cursor: pointer;
+      margin: 1.2rem 0;
+    }
+    .envelope-box {
+      width: clamp(260px, 48vw, 360px);
+      height: clamp(170px, 32vw, 240px);
       position: relative;
       transform-style: preserve-3d;
-      transition: transform 0.4s ease;
-      filter: drop-shadow(0 20px 50px rgba(255,110,180,0.4));
+      transition: transform 0.4s ease, filter 0.4s ease;
+      filter: drop-shadow(0 20px 40px rgba(255, 96, 170, 0.35));
     }
-    .envelope-scene:hover .envelope-3d {
-      transform: rotateY(-8deg) rotateX(5deg) translateY(-8px);
-      filter: drop-shadow(0 30px 60px rgba(255,110,180,0.6));
+    .envelope-3d-scene:hover .envelope-box {
+      transform: rotateY(-8deg) rotateX(6deg) translateY(-8px);
+      filter: drop-shadow(0 28px 55px rgba(255, 96, 170, 0.55));
     }
 
-    /* Envelope SVG-like using divs */
-    .env-base {
-      position: absolute; inset: 0;
-      background: linear-gradient(160deg, #ffe4f5 0%, #ffb3e0 60%, #ff80cc 100%);
-      border-radius: 10px 10px 20px 20px;
-      border: 2px solid #ff66bb;
+    .env-back {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, #fce4ec, #f8bbd0);
+      border-radius: 12px 12px 20px 20px;
+      border: 2px solid #f06292;
     }
-    .env-left-tri {
-      position: absolute; top: 0; left: 0;
+    .env-flap-left {
+      position: absolute;
+      top: 0; left: 0;
       width: 50%; height: 100%;
-      background: linear-gradient(135deg, #ffccee, #ff99dd);
+      background: linear-gradient(135deg, #f8bbd0, #f06292);
       clip-path: polygon(0 0, 100% 50%, 0 100%);
-      filter: brightness(0.92);
+      opacity: 0.95;
     }
-    .env-right-tri {
-      position: absolute; top: 0; right: 0;
+    .env-flap-right {
+      position: absolute;
+      top: 0; right: 0;
       width: 50%; height: 100%;
-      background: linear-gradient(225deg, #ffccee, #ff99dd);
+      background: linear-gradient(225deg, #f8bbd0, #f06292);
       clip-path: polygon(100% 0, 0 50%, 100% 100%);
-      filter: brightness(0.88);
+      opacity: 0.9;
     }
-    .env-bottom-tri {
-      position: absolute; bottom: 0; left: 0;
+    .env-flap-bottom {
+      position: absolute;
+      bottom: 0; left: 0;
       width: 100%; height: 60%;
-      background: linear-gradient(180deg, #ff99dd, #ff55bb);
+      background: linear-gradient(180deg, #f06292, #e91e63);
       clip-path: polygon(0 100%, 50% 0%, 100% 100%);
-      filter: brightness(0.95);
+      z-index: 2;
     }
-
-    /* Top flap */
-    .env-flap {
-      position: absolute; top: 0; left: 0;
-      width: 100%; height: 58%;
-      background: linear-gradient(180deg, #ffd6f0 0%, #ff99dd 100%);
-      clip-path: polygon(0 0, 50% 100%, 100% 0);
-      transform-origin: top center;
-      transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1.000);
-      z-index: 5;
-    }
-    .env-flap.open { transform: rotateX(180deg); }
-
-    /* Letter inside */
-    .env-letter-peek {
+    .env-letter-peek-slip {
       position: absolute;
       bottom: 12%; left: 8%;
-      width: 84%; height: 65%;
-      background: linear-gradient(180deg, #fffef5, #fff8e1);
-      border-radius: 4px;
-      transform: translateY(110%);
-      transition: transform 0.7s 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      z-index: 3;
-      box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
-    }
-    .env-letter-peek.risen { transform: translateY(5%); }
-
-    /* Wax seal */
-    .env-seal {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 56px; height: 56px;
-      background: radial-gradient(circle at 38% 32%, #ff4477, #aa0033);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.6rem;
-      box-shadow: 0 6px 20px rgba(180,0,60,0.5), inset 0 -3px 8px rgba(0,0,0,0.25);
-      z-index: 6;
-      transition: all 0.4s;
-    }
-    .env-seal.gone { opacity: 0; transform: translate(-50%, -50%) scale(0) rotate(180deg); }
-
-    /* Stars/sparkles on envelope hover */
-    .env-sparkle {
-      position: absolute;
-      pointer-events: none;
-      font-size: 1rem;
-      animation: sparkleFloat 1.5s ease-out forwards;
-      z-index: 10;
-    }
-    @keyframes sparkleFloat {
-      0% { opacity: 1; transform: translate(0,0) scale(1); }
-      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.2); }
-    }
-
-    .click-hint {
+      width: 84%; height: 75%;
+      background: #fffdf5;
+      border-radius: 6px;
+      box-shadow: 0 -4px 15px rgba(0,0,0,0.12);
+      transform: translateY(100%);
+      transition: transform 0.7s cubic-bezier(0.34, 1.3, 0.64, 1);
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-family: 'Caveat', cursive;
-      font-size: 1.3rem;
-      color: var(--pink);
-      animation: hintPulse 1.8s ease-in-out infinite;
+      font-size: 1.4rem;
+      color: #d81b60;
+      font-weight: 700;
     }
-    @keyframes hintPulse {
-      0%, 100% { opacity: 0.4; transform: translateY(0); }
-      50% { opacity: 1; transform: translateY(-5px); }
+    .env-letter-peek-slip.peeked {
+      transform: translateY(10%);
     }
-    .click-hint.gone { display: none; }
 
-    /* ===== SCREEN 3: LETTER ===== */
+    .env-top-fold {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 60%;
+      background: linear-gradient(180deg, #fce4ec 0%, #f48fb1 100%);
+      clip-path: polygon(0 0, 50% 100%, 100% 0);
+      transform-origin: top center;
+      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 4;
+      border-bottom: 1px solid rgba(233, 30, 99, 0.4);
+    }
+    .env-top-fold.open {
+      transform: rotateX(180deg);
+    }
+
+    .env-wax-seal {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 58px; height: 58px;
+      background: radial-gradient(circle at 35% 30%, #ff4081, #c2185b);
+      border-radius: 50%;
+      box-shadow: 0 6px 20px rgba(194, 24, 91, 0.55), inset 0 -3px 8px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      z-index: 5;
+      transition: all 0.4s ease;
+    }
+    .env-wax-seal.popped {
+      transform: translate(-50%, -50%) scale(0) rotate(180deg);
+      opacity: 0;
+    }
+
+    .tap-hint-text {
+      font-family: 'Caveat', cursive;
+      font-size: 1.4rem;
+      color: #ff9ec9;
+      animation: pulseUpDown 1.8s ease-in-out infinite;
+    }
+    @keyframes pulseUpDown {
+      0%, 100% { transform: translateY(0); opacity: 0.6; }
+      50% { transform: translateY(-6px); opacity: 1; }
+    }
+
+    /* SCREEN 3: LETTER & INTERACTIVE WORLD */
     #screen-letter {
       position: relative;
       z-index: 10;
-      background: transparent;
       width: 100%;
       min-height: 100vh;
-      padding: clamp(2rem, 5vw, 4rem) 1rem 5rem;
       display: none;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
+      padding: clamp(2rem, 5vw, 4rem) 1rem 6rem;
     }
     #screen-letter.active {
       display: flex;
     }
 
-    .letter-entry { animation: letterEntry 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
-    @keyframes letterEntry {
-      from { opacity: 0; transform: translateY(80px) scale(0.9) rotateX(10deg); }
-      to { opacity: 1; transform: translateY(0) scale(1) rotateX(0); }
+    /* Interactive Balloon Floaters (Tap to Pop!) */
+    .balloon-spawner {
+      position: fixed;
+      bottom: -60px;
+      pointer-events: all;
+      cursor: pointer;
+      z-index: 15;
+      animation: balloonFloatUp linear forwards;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.25));
+    }
+    @keyframes balloonFloatUp {
+      0% { transform: translateY(0) rotate(0); opacity: 0.9; }
+      100% { transform: translateY(-120vh) rotate(15deg); opacity: 0; }
     }
 
-    .letter-card {
-      max-width: min(780px, 95vw);
-      width: 100%;
-      background: linear-gradient(170deg, #fffef5 0%, #fff8e1 100%);
-      border-radius: 20px;
-      padding: clamp(1.8rem, 5vw, 3.5rem) clamp(1.8rem, 5vw, 4rem);
+    /* Memory / Fun Stats Bar */
+    .stats-container {
+      width: min(780px, 94vw);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 2rem;
+      animation: fadeSlideDown 0.8s ease both;
+    }
+    @keyframes fadeSlideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stat-pill {
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 150, 200, 0.25);
+      border-radius: 18px;
+      padding: 12px 14px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .stat-pill:hover {
+      background: rgba(255, 96, 170, 0.15);
+      border-color: var(--primary-pink);
+      transform: translateY(-3px);
+    }
+    .stat-value {
+      font-family: 'Caveat', cursive;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1.1;
+    }
+    .stat-label {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #ffb8dc;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* The Main Parchment Letter */
+    .parchment-letter {
+      width: min(780px, 94vw);
+      background: linear-gradient(170deg, #fffef7 0%, #fffbf0 60%, #fff7e6 100%);
+      border-radius: 24px;
       box-shadow:
-        0 0 0 2px rgba(255,215,0,0.5),
-        0 25px 80px rgba(0,0,0,0.6),
-        0 0 100px rgba(255,110,180,0.15);
+        0 25px 70px rgba(0, 0, 0, 0.65),
+        0 0 0 1px rgba(255, 215, 0, 0.5),
+        0 0 80px rgba(255, 96, 170, 0.2);
+      color: var(--ink);
+      padding: clamp(2rem, 5vw, 4rem) clamp(1.6rem, 5vw, 4rem);
       position: relative;
       overflow: hidden;
-      color: #2d2012;
+      animation: letterUnfurl 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    @keyframes letterUnfurl {
+      from { opacity: 0; transform: translateY(60px) scale(0.92); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    /* Paper lines */
-    .letter-card::before {
+    /* Notebook ruling */
+    .parchment-letter::before {
       content: '';
-      position: absolute; inset: 0;
+      position: absolute;
+      inset: 0;
       background: repeating-linear-gradient(
-        transparent, transparent 27px,
-        rgba(180,180,255,0.12) 27px, rgba(180,180,255,0.12) 28px
+        transparent,
+        transparent 28px,
+        rgba(150, 180, 240, 0.15) 28px,
+        rgba(150, 180, 240, 0.15) 29px
       );
-      pointer-events: none; border-radius: 20px;
+      pointer-events: none;
     }
     /* Margin line */
-    .letter-card::after {
+    .parchment-letter::after {
       content: '';
-      position: absolute; top: 0;
-      left: clamp(4rem, 9vw, 5.5rem);
-      width: 1.5px; height: 100%;
-      background: rgba(255,150,150,0.25);
+      position: absolute;
+      top: 0;
+      left: clamp(3.5rem, 8vw, 5.2rem);
+      width: 2px;
+      height: 100%;
+      background: rgba(255, 140, 140, 0.3);
       pointer-events: none;
     }
 
-    /* Glow border animation */
-    .letter-glow {
-      position: absolute; inset: -2px;
-      border-radius: 22px;
-      background: linear-gradient(90deg, #ff6eb4, #ffd700, #a855f7, #ff6eb4);
-      background-size: 300% auto;
-      animation: borderGlow 4s linear infinite;
-      z-index: -1;
+    /* Post-it Note Pins */
+    .sticky-note {
+      position: absolute;
+      background: #fff885;
+      color: #333;
+      padding: 10px 14px;
+      border-radius: 2px 2px 10px 2px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+      font-family: 'Reenie Beanie', cursive;
+      font-size: 1.3rem;
+      line-height: 1.1;
+      transform: rotate(var(--rot, -3deg));
+      z-index: 5;
+      border-top: 8px solid rgba(255, 230, 0, 0.7);
     }
-    @keyframes borderGlow { to { background-position: 300% center; } }
-
-    /* Corner decor */
-    .c-deco {
-      position: absolute; font-size: 1.4rem;
-      animation: cSpin 8s linear infinite;
-      opacity: 0.35;
+    .sticky-note.top-right {
+      top: 18px;
+      right: 20px;
     }
-    @keyframes cSpin { to { transform: rotate(360deg); } }
-    .c-deco.tl { top: 1rem; left: 1rem; }
-    .c-deco.tr { top: 1rem; right: 1rem; animation-direction: reverse; }
-    .c-deco.bl { bottom: 1rem; left: 1rem; animation-direction: reverse; }
-    .c-deco.br { bottom: 1rem; right: 1rem; }
 
-    /* Letter header */
-    .ltr-header {
+    /* Letter Header */
+    .letter-title-section {
       text-align: center;
-      padding-bottom: 1.5rem;
-      margin-bottom: 1.5rem;
-      border-bottom: 2px dashed rgba(255,180,100,0.35);
+      margin-bottom: 2rem;
+      padding-bottom: 1.4rem;
+      border-bottom: 2px dashed rgba(212, 34, 127, 0.25);
       position: relative;
     }
-    .ltr-header h1 {
+    .letter-main-h1 {
       font-family: 'Caveat', cursive;
-      font-size: clamp(1.7rem, 5vw, 2.8rem);
+      font-size: clamp(2rem, 5.5vw, 3.2rem);
       font-weight: 700;
-      background: linear-gradient(135deg, #ff3366, #ff6b35, #cc00ff);
+      background: linear-gradient(135deg, #d81b60 0%, #ff5722 50%, #8e24aa 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 1.2;
+      line-height: 1.15;
+      margin-bottom: 0.3rem;
     }
-    .ltr-header .sub {
-      font-family: 'Caveat', cursive;
-      font-size: 1.15rem;
-      color: #999;
-      margin-top: 0.3rem;
-      font-style: italic;
-    }
-
-    /* Letter body */
-    .ltr-body {
-      font-size: clamp(0.92rem, 2.3vw, 1.06rem);
-      line-height: 1.95;
-      position: relative;
-    }
-    .ltr-body p { margin-bottom: 1.25rem; }
-    .ltr-body p:last-child { margin-bottom: 0; }
-
-    .poetic {
-      font-style: italic;
-      color: #6a0dad;
-      font-size: 1.04em;
-      border-left: 3px solid #ff80cc;
-      padding-left: 1rem;
-      margin: 1.3rem 0 !important;
-      background: rgba(180,0,200,0.04);
-      border-radius: 0 8px 8px 0;
-      padding-top: 0.4rem;
-      padding-bottom: 0.4rem;
-    }
-
-    /* Animated stickers */
-    .s { display: inline-block; }
-    .s-bounce { animation: sBounce 2.5s ease-in-out infinite; }
-    .s-spin   { animation: sSpin   4s linear infinite; }
-    .s-shake  { animation: sShake  2s ease-in-out infinite; }
-    @keyframes sBounce { 0%,100%{transform:translateY(0)rotate(-5deg)} 50%{transform:translateY(-6px)rotate(5deg)} }
-    @keyframes sSpin   { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-    @keyframes sShake  { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-10deg)} 75%{transform:rotate(10deg)} }
-
-    /* Divider */
-    .divider {
-      border: none;
-      border-top: 2px dashed rgba(255,180,100,0.3);
-      margin: 1.5rem 0;
-    }
-
-    /* Footer */
-    .ltr-footer {
-      margin-top: 2rem;
-      padding-top: 1.5rem;
-      border-top: 2px dashed rgba(255,180,100,0.35);
-      text-align: right;
+    .letter-subtitle-p {
       font-family: 'Caveat', cursive;
       font-size: 1.35rem;
-      color: #7b3f00;
+      color: #e91e63;
+      font-weight: 600;
     }
 
-    /* Back button */
-    .back-btn {
-      margin-top: 2.5rem;
-      font-family: 'Caveat', cursive;
-      font-size: 1.1rem;
-      color: #ff9bcd;
-      background: rgba(255,110,180,0.08);
-      border: 1.5px solid rgba(255,150,200,0.3);
+    /* Letter Text Content */
+    .letter-prose {
+      font-size: clamp(1rem, 2.3vw, 1.12rem);
+      line-height: 2.05;
+      position: relative;
+      color: #2b1f1d;
+    }
+    .letter-prose p {
+      margin-bottom: 1.35rem;
+    }
+
+    /* Highlighting poetic/emotional lines */
+    .poetic-quote {
+      font-style: italic;
+      color: #5c186e;
+      background: linear-gradient(90deg, rgba(240, 98, 146, 0.12), transparent);
+      border-left: 4px solid #e91e63;
+      padding: 0.6rem 1rem;
+      border-radius: 0 10px 10px 0;
+      margin: 1.4rem 0 !important;
+    }
+
+    /* Animated Emoji Badges */
+    .emo {
+      display: inline-block;
+      vertical-align: middle;
+      font-style: normal;
+    }
+    .emo-bounce { animation: emoBounce 2.2s infinite ease-in-out; }
+    .emo-wiggle { animation: emoWiggle 2s infinite ease-in-out; }
+    .emo-spin   { animation: emoSpin 4s infinite linear; }
+    @keyframes emoBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+    @keyframes emoWiggle { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-8deg); } 75% { transform: rotate(8deg); } }
+    @keyframes emoSpin   { to { transform: rotate(360deg); } }
+
+    /* Interactive Easter Egg Buttons */
+    .easter-egg-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 1.8rem 0;
+      justify-content: center;
+    }
+    .btn-egg {
+      background: #fce4ec;
+      border: 1.5px dashed #f06292;
       border-radius: 50px;
-      padding: 0.7rem 2rem;
+      padding: 8px 18px;
+      color: #ad1457;
+      font-family: 'Caveat', cursive;
+      font-size: 1.25rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .btn-egg:hover {
+      background: #f06292;
+      color: #fff;
+      transform: scale(1.05);
+    }
+
+    .letter-signoff {
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 2px dashed rgba(212, 34, 127, 0.25);
+      text-align: right;
+      font-family: 'Caveat', cursive;
+      font-size: 1.45rem;
+      color: #880e4f;
+    }
+
+    /* Floating Gift Box Button at bottom */
+    .gift-patience-box {
+      margin-top: 2.5rem;
+      background: linear-gradient(135deg, rgba(255, 96, 170, 0.15), rgba(155, 45, 122, 0.2));
+      border: 2px dashed var(--primary-pink);
+      border-radius: 20px;
+      padding: 1.6rem;
+      text-align: center;
+      width: min(780px, 94vw);
+    }
+    .gift-patience-title {
+      font-family: 'Caveat', cursive;
+      font-size: 1.8rem;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+    .gift-btn-options {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    .btn-patience {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      border-radius: 50px;
+      padding: 10px 20px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .btn-patience:hover {
+      background: var(--primary-pink);
+      border-color: var(--primary-pink);
+      transform: translateY(-2px);
+    }
+
+    /* Back To Top Floating Action */
+    .btn-back-top {
+      margin-top: 2.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 150, 200, 0.3);
+      border-radius: 50px;
+      color: #ff9ec9;
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      padding: 10px 28px;
       cursor: pointer;
       transition: all 0.3s;
-      backdrop-filter: blur(10px);
     }
-    .back-btn:hover { background: rgba(255,110,180,0.2); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255,110,180,0.2); }
+    .btn-back-top:hover {
+      background: rgba(255, 96, 170, 0.25);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255, 96, 170, 0.3);
+    }
 
-    /* ===== CONFETTI ===== */
-    .cp {
-      position: fixed; top: -20px;
-      border-radius: 2px;
+    /* Modal / Popups for Easter Eggs */
+    .custom-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .custom-modal.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal-content {
+      background: #fffdf5;
+      color: #2b1f1d;
+      border-radius: 24px;
+      padding: 2rem;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .custom-modal.open .modal-content {
+      transform: scale(1);
+    }
+    .modal-emoji { font-size: 3rem; margin-bottom: 0.8rem; }
+    .modal-title { font-family: 'Caveat', cursive; font-size: 2.2rem; color: #d81b60; margin-bottom: 0.5rem; }
+    .modal-body { font-size: 1rem; line-height: 1.6; color: #555; margin-bottom: 1.5rem; }
+    .btn-modal-close {
+      background: #e91e63;
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 10px 28px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* Floating Canvas Confetti Particles */
+    .confetti-particle {
+      position: fixed;
+      top: -15px;
       pointer-events: none;
       z-index: 9999;
-      animation: cpFall linear forwards;
+      animation: confettiFallAnim linear forwards;
     }
-    @keyframes cpFall {
+    @keyframes confettiFallAnim {
       0% { transform: translateY(0) rotateZ(0) rotateX(0); opacity: 1; }
-      100% { transform: translateY(110vh) rotateZ(720deg) rotateX(360deg); opacity: 0; }
+      100% { transform: translateY(115vh) rotateZ(720deg) rotateX(360deg); opacity: 0; }
     }
-
-    /* ===== FLOATING EMOJIS ===== */
-    .fe {
-      position: fixed;
-      font-size: clamp(1rem, 2.5vw, 1.8rem);
-      pointer-events: none;
-      z-index: 1;
-      animation: feFloat linear infinite;
-      opacity: 0;
-    }
-    @keyframes feFloat {
-      0%   { opacity: 0; transform: translateY(100vh) rotate(0deg) scale(0.6); }
-      8%   { opacity: 1; }
-      92%  { opacity: 0.7; }
-      100% { opacity: 0; transform: translateY(-15vh) rotate(360deg) scale(1.1); }
-    }
-
-    /* ===== TRANSITIONS ===== */
-    @keyframes fadeSlideUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ===== RIPPLE on key press ===== */
-    .ripple {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(255,110,180,0.4);
-      transform: scale(0);
-      animation: rippleAnim 0.4s ease-out;
-      pointer-events: none;
-    }
-    @keyframes rippleAnim { to { transform: scale(3); opacity: 0; } }
-
-    /* ===== SUCCESS OVERLAY ===== */
-    #success-flash {
-      position: fixed; inset: 0; z-index: 999;
-      background: radial-gradient(circle, rgba(255,215,0,0.3), transparent);
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    #success-flash.flash { opacity: 1; }
   </style>
 </head>
 <body class="locked">
 
-<!-- Particle canvas -->
+<!-- Background Starfield & Nebula Canvas -->
 <canvas id="bg-canvas"></canvas>
 
-<!-- Success flash -->
-<div id="success-flash"></div>
+<!-- Background Music Toggle (Web Audio API Synthesizer - Zero External Files!) -->
+<button class="music-toggle" id="music-toggle" title="Toggle Soft Lo-Fi Birthday Chime">
+  <span class="music-note">🎵</span>
+  <span id="music-state-text">Play Birthday Tune</span>
+</button>
 
-<!-- ===================== SCREEN 1: PASSWORD ===================== -->
+<!-- ===================== SCREEN 1: PASSWORD LOCK ===================== -->
 <div class="screen" id="screen-password">
-  <div class="lock-wrap">
-    <div class="lock-icon" id="lock-icon">
-      <div class="lock-pulse"></div>
-      <div class="lock-shackle" id="lock-shackle"></div>
-      <div class="lock-body"></div>
+  <div class="lock-card">
+    <div class="badge-top">🔒 Confidential Birthday File</div>
+
+    <div class="lock-icon-wrap" id="lock-icon-wrap">
+      <div class="lock-shackle"></div>
+      <div class="lock-body-box">
+        <div class="keyhole"></div>
+      </div>
     </div>
 
-    <div>
-      <div class="pw-title">🔐 Enter the Secret Password</div>
-      <div class="pw-hint">Hint: Teri ID hai ye 😏</div>
+    <h2 class="lock-title">Enter Secret Password</h2>
+    <p class="lock-desc">Only Arshita can unlock this letter 😏</p>
+
+    <div class="input-group">
+      <input
+        type="password"
+        class="pw-input-field"
+        id="pw-input"
+        placeholder="Type password..."
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="none"
+        spellcheck="false"
+      />
     </div>
 
-    <input
-      class="pw-input-box"
-      id="pw-input"
-      type="password"
-      placeholder="type the password..."
-      autocomplete="off"
-      autocorrect="off"
-      autocapitalize="none"
-      spellcheck="false"
-    />
+    <div class="pw-error-text" id="pw-error"></div>
 
-    <div class="pw-error" id="pw-error"></div>
+    <button class="btn-unlock" id="btn-unlock">Unlock Letter 🔓</button>
 
-    <button class="pw-submit" id="pw-submit">Open 🔓</button>
+    <button class="hint-btn" id="hint-btn">Need a hint? 💡</button>
   </div>
 </div>
 
-<!-- ===================== SCREEN 2: ENVELOPE ===================== -->
+<!-- ===================== SCREEN 2: 3D ENVELOPE ===================== -->
 <div class="screen hidden gone" id="screen-envelope">
-  <div class="inner">
-    <div class="env-title" id="env-title">🎂 Happy Birthday, Arshita!</div>
-    <div class="env-subtitle" id="env-subtitle">aka Bhootni, Don of our group 👻</div>
+  <div class="env-container">
+    <div class="env-top-tag">🎂 Happy Birthday, Arshita! 🎂</div>
+    <div class="env-subtag">aka Bhootni, Don of our group 👻</div>
 
-    <div class="envelope-scene" id="env-scene" onclick="openEnvelope()">
-      <div class="envelope-3d" id="envelope-3d">
-        <div class="env-base"></div>
-        <div class="env-left-tri"></div>
-        <div class="env-right-tri"></div>
-        <div class="env-bottom-tri"></div>
-        <div class="env-letter-peek" id="env-peek"></div>
-        <div class="env-flap" id="env-flap"></div>
-        <div class="env-seal" id="env-seal">💌</div>
+    <div class="envelope-3d-scene" id="env-scene" onclick="triggerOpenEnvelope()">
+      <div class="envelope-box" id="envelope-box">
+        <div class="env-back"></div>
+        <div class="env-flap-left"></div>
+        <div class="env-flap-right"></div>
+        <div class="env-flap-bottom"></div>
+        <div class="env-letter-peek-slip" id="env-peek-slip">💌 Secret Letter</div>
+        <div class="env-top-fold" id="env-top-fold"></div>
+        <div class="env-wax-seal" id="env-wax-seal">💌</div>
       </div>
     </div>
 
-    <div class="click-hint" id="click-hint">✨ Click the envelope to open ✨</div>
+    <div class="tap-hint-text">✨ Tap the envelope to break the wax seal ✨</div>
   </div>
 </div>
 
-<!-- ===================== SCREEN 3: LETTER ===================== -->
+<!-- ===================== SCREEN 3: THE MASTERPIECE LETTER ===================== -->
 <div id="screen-letter">
-  <div class="letter-entry" id="letter-wrap">
-    <div class="letter-card">
-      <div class="letter-glow"></div>
-      <span class="c-deco tl">🌸</span>
-      <span class="c-deco tr">✨</span>
-      <span class="c-deco bl">💫</span>
-      <span class="c-deco br">🎂</span>
 
-      <div class="ltr-header">
-        <h1>Happy Birthday 🎂 Arshita &amp; Bhootni 😁</h1>
-        <div class="sub">One more year close to dreams ❤️</div>
-      </div>
+  <!-- Interactive Friendship Stats -->
+  <div class="stats-container">
+    <div class="stat-pill">
+      <div class="stat-value">1 yr 3 mo</div>
+      <div class="stat-label">Friendship Bond</div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-value">9999%</div>
+      <div class="stat-label">Bhootni Drama Level</div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-value">0%</div>
+      <div class="stat-label">Gift Patience</div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-value">Forever</div>
+      <div class="stat-label">Best Friends</div>
+    </div>
+  </div>
 
-      <div class="ltr-body">
-
-        <p>Well you are 19 now, aur agla saal tum log bhi vintage 20s knock kroge <span class="s s-bounce">😂</span></p>
-
-        <p>But yarr genuinely no words like abhi kuch samajh nahi aa raha kya likhu kyunki kuch cheezein samne bolna ya kehna bada mushkil hota hai, to socha ek message ke format mein koshish kar hi sakta hoon. Well yeh message thoda pehle hi likh liya hoga maine — tujhe tera birthday gift mil jaayega isse pehle. Main gift deta hua ek baar to bolunga ki isko <strong>28 ko hi kholna</strong> taaki tu mera yeh message padhne ke baad use khole, because its my first time selecting something heheh — but yeh main jaanta hoon tu khol hi degi, patience kahan hai itni <span class="s s-shake">😂</span></p>
-
-        <p>Well genuinely yarr, pata hi nahi laga — its almost <strong>1 year 3 months</strong> of our friendship and I think it was the best moment in the last 2 years, meeting you and Mehak (Chutki) of course <span class="s s-bounce">💕</span></p>
-
-        <p>Well genuinely jab main is college mein aaya tab kabhi nahi socha tha ki yeh itna bada impact karega meri life pe. But yeah, it was a cool 1 year. Ek trip with you guys, infact 1st trip in my last few years with classmates — it was so fun! Main abhi bhi kabhi kabhi woh purani photos dekhta hoon trips ki <span class="s s-shake">😂</span> Purani to aisa bol raha hoon jaise 20 saal ho gaye hain — its only 6–7 months — but yeah it was pure fun yarr, and hope so absence of Mehak doesn't ruin our next trip. Baki tum logon ki marzi hai, but I genuinely want to spend more time with you guys and know everyone well. Let's hope it comes true <span class="s s-bounce">🤞</span></p>
-
-        <p>Yarr jahan tak baat hai, kaafi baatein jo main jaanta hoon — mujhe meri ajeeb lagti hongi na? Like main kabhi kabhi dost bolke bhi jhooth bol deta hoon <span class="s s-bounce">😆</span> Main bhi sochta hoon ki chapati kyun hoon yarr, but fact hai yarr mujhe past se ab ajeeb lagta hai aur main kisi ko saari baatein batane se bahut darta hoon. Like bahut... ultimately mujhe lagta hai, phir bataya, acha dost bana, phir khatam — log chale jaate hain. <strong>Hope tum log naa jaao.</strong> <span class="s s-bounce">🥺</span></p>
-
-        <p>Well yarr infact ek cheez zaroor kehna chahungaa — agar kabhi bhi main kuch galat karta hoon yarr, muh pe bol diya karo. Kuch bhi. Mujhe hurt ya bura nahi lagta yarr, itna mat socha karo. Infact mujhe accha lagta hai ki log mujhe change karne ki koshish karte hain aur ek accha insaan banane ki koshish karte hain. Well woh to tum logon pe hai ab. For my side — <em>I never ask in return. If you did, I will do. If you didn't, I will still do. Not matter how far we are.</em></p>
-
-        <p>Well thoda likhte likhte off topic chala gaya <span class="s s-shake">😭😭</span></p>
-
-        <p>Har baar ki aadat hai, kuch zyada hi irritate karta hoon, ajeeb baatein karta hoon yarr — mujhe khud ajeeb lagti hain. Agar main sach ka bolun to main chup hi ho jaata hoon <span class="s s-bounce">🤣</span> well who cares, not me hehhe.</p>
-
-        <p>Well yarr ek cheez — recently mera nature thoda ajeeb sa ho gaya hai, especially 2nd year mein. Well yeh sab kuch personal life experiences ke kaaran hua hai jo main kahunga accha hai khatam ho gaya, aur ab train normal track pe aayegi. Ek to aajkal ki reels demotivate karti hain raat ko — "jisko aap priority maante ho, kya woh aapko priority maanta hai?" — I mean wth <span class="s s-shake">🤦‍♂️</span> aur main gadha usse bhi sochne lag jaata hoon yarr. Well chalo chodo — yeh baat kabhi saath mein baith ke hogi, aise message mein bahut lambi chal jaayegi.</p>
-
-        <p>Ohhh!! Wait mujhe idea aaya — website bana dunga heheh <span class="s s-bounce">😂</span> taaki itna saara likh sakun, Instagram pe nahi aayega. And haan, kisi aur ko mat bhejna especially Mehak <span class="s s-shake">😠</span> Kahi woh bhi padh rahi ho — well agar padh bhi rahi ho to <strong>"Hello Mehak 👋"</strong> — DM mein reply kar dena mujhe uska.</p>
-
-        <p>Well but yarr genuinely, bada mazaa aaya tum dono se milke. And yaar, ek baat aur — I don't think I've ever properly told you this, but <em>I genuinely appreciate the kind of person you are.</em> The way you make normal moments memorable, the way we can joke around over the most random things, and how comfortable our friendship has become means a lot to me. Maybe main har baar express nahi kar pata, but that doesn't mean I don't value it. I'm genuinely glad ki college mein tumse mila, aur I hope life tumhe woh sab de jo tum deserve karti ho. <span class="s s-bounce">❤️</span></p>
-
-        <p>Well infact first time hai bina socha hi type karta ja raha hoon <span class="s s-shake">😂</span></p>
-
-        <p>But really yarr — past 2 years mein best things jo hua woh hai meeting Chutki and Bhootni. [And also Gulabo also <span class="s s-bounce">😂</span> use kaise bhool sakta hoon — like woh banda bada mazedaar hai yarr, isliye uske saath hoon. Pata nahi kyun dil se tum logon ka best friend maanta hoon. But yeah he is one too!]</p>
-
-        <p>Ab baki ki baatein kabhi aur — abhi Happy Birthday <span class="s s-spin">🎂</span> 🥳 3rd time ya 4th time, main remember nahi karta <span class="s s-shake">🤓😭</span></p>
-
-        <hr class="divider"/>
-
-        <p class="poetic">In fact I am the type of person who doesn't measure our friendship by whether I'm always the first person you call or the person you spend the most time with. What we have doesn't need to compete to be meaningful. I love that our friendship has room for other people too.</p>
-
-        <p class="poetic">And I hope your life keeps bringing you wonderful people to love, laugh with, and grow beside — because someone else becoming important to you will never make you less important to me.</p>
-
-        <p>I know I irritate you sometimes, I tease you without reason, I act childish, I get angry — but deep inside I know our bond is stronger than these small fights.</p>
-
-        <p class="poetic">
-          With you, I don't have to pretend.<br/>
-          I don't have to hide my tears.<br/>
-          I don't have to fake a smile.<br/>
-          — and that is the most beautiful feeling in this world.
-        </p>
-
-        <p class="poetic">
-          I don't want a thousand friends,<br/>
-          I don't want a big circle,<br/>
-          I just want one person who stays —<br/>
-          <strong>and that person is you.</strong>
-        </p>
-
-        <p>No matter where life takes us, no matter how busy we become, promise me we will always find our way back to this pure, honest friendship.</p>
-
-        <p>Because having you in my life is one of the biggest blessings I will forever be thankful for.</p>
-
-        <p class="poetic">
-          You are not just my best friend...<br/>
-          <strong>You are my forever person.</strong> <span class="s s-bounce">🫶</span>
-        </p>
-
-        <hr class="divider"/>
-
-        <p>Tujhe tang karne mein jo mazaa aata hai na mujhe, woh kisi aur ki tang kheenchne mein nahi aata <span class="s s-bounce">😂</span></p>
-
-        <p>But jokes apart, thank you for being such a genuine friend. Kabhi kabhi ajeeb lagti hai lakin overall you guys are the best <span class="s s-shake">👌</span></p>
-
-        <p>May your life be full of happiness, crazy memories, and endless smiles. Stay the same cute, annoying, and amazing Bhootni and infact don of our group that we all love. <strong>Once again, Happy Birthday Bhootni! 🥳</strong></p>
-
-        <hr class="divider"/>
-
-        <p>Isse zyada likh nahi sakta — thak gaya <span class="s s-shake">😭</span> Infact acha sa end karna bhi bhool gaya. Pata nahi kya kuch likh diya. Bas yahi bolunga — Hope you achieve all your dreams this year that you've dreamt of. Baki main aur woh choti bachi naak mein dum karne wala to hai hi <span class="s s-bounce">😂</span></p>
-
-        <p>Chal ab sach mein khatam karta hoon, warna birthday message ke naam par poori autobiography likh dunga <span class="s s-shake">😂😭</span> Bas yahi hope karta hoon ki iss saal tere saare dreams dheere dheere poore hon, tu hamesha khush rahe, aur life tujhe bahut saari beautiful memories de.</p>
-
-        <p>Aur haan, <strong>next trip ka plan cancel mat karwana</strong> — mujhe genuinely tum sabke saath aur memories banani hain. Hopefully iss baar sab saath mein honge. <span class="s s-bounce">❤️</span></p>
-
-        <p>Stay the same cute, annoying, dramatic Bhootni and the don of our group. <span class="s s-shake">😂</span> <span class="s s-bounce">🫶</span></p>
-
-        <p><strong>Happy Birthday once again, Arshita!</strong> Thank you for being a part of some of my favourite memories. I hope we make many more together. <span class="s s-bounce">❤️</span> <span class="s s-spin">🎂</span></p>
-
-        <p>Ab bas, jaa gift khol le... agar itna patience bacha hai toh. <span class="s s-shake">😂😭</span></p>
-
-        <p style="text-align:center;font-size:1.9rem;margin-top:1.2rem;font-family:'Caveat',cursive;">
-          At last — Happy Birthday Bhootni!!! 🫶
-        </p>
-      </div>
-
-      <div class="ltr-footer">
-        With love &amp; all the good vibes 💫<br/>
-        — Tera ajeeb sa dost 😂
-      </div>
+  <!-- Main Parchment Letter Card -->
+  <div class="parchment-letter">
+    <!-- Pinned Sticky Note -->
+    <div class="sticky-note top-right">
+      🎂 Level 19 Unlocked!<br/>
+      (Almost Vintage 20s 😂)
     </div>
 
-    <button class="back-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆ Back to top 😂</button>
+    <!-- Letter Header -->
+    <div class="letter-title-section">
+      <h1 class="letter-main-h1">Happy birthday 🎂 Arshita or Bhootni 😁</h1>
+      <p class="letter-subtitle-p">One more year close to dreams ❤️</p>
+    </div>
+
+    <!-- Letter Prose (Exact Words Preserved) -->
+    <div class="letter-prose">
+      <p>Well you are 19 old abb agla saal tum log bhi vintage 20s knock kroga <span class="emo emo-bounce">😂</span></p>
+
+      <p>But yarr genuinely no words like abhi khuch samjh nhi a raha kya likhu kunki khuch chiza samna bolna ya khena bada mushkil hota ha to socha ik message ka format ma khosih kr hi sakta hu well yeh message thoda phela hi likha hoga mena tujhe tera birthday gift mil jyega is sa phela ma gift deta hua ik bar to bolunga ki isko <strong>28 ko hi kholna</strong> taki tu mera yeh message padhna ka bad usa khola because its my first time selecting something heheh but yeh I know tu khol hi degi patience kha ha itni <span class="emo emo-bounce">😂</span></p>
+
+      <p>Well genuinely yrr pata nhi laga its almost <strong>1 year 3 months</strong> to our friendship and I think its was the best moment in last 2 years meeting you and mehak [chutki] ofcourse well genuinely when I joined this college i never thought it will make such a big impact on my life but yeah its was cool 1 year well a trip with you guys infact 1st trip in my last few years with classmates it was so fun I still sometime wo purni photos dekhta hu trips ki <span class="emo emo-wiggle">😂</span> purani to esa bol raha jesa 20 saal hogya ha its only 6-7 months but yeah its was pure fun yarr and hope so Absence of mehak don't ruin our next trip well baki tum logo hi marji ha but I genuinely wants to spend more time with you guys and know you guys everyone well lets hope its comes True <span class="emo emo-bounce">🤞</span></p>
+
+      <p>Yarr jaha tak bat ha kafi bata jo I know mera ma ajeeb lagti hogi na like ma kabhi kabhi dost bol ka hi jute bol deta hu <span class="emo emo-bounce">😆</span> ma bhi sochta hu yeh bat ki chapati ku hu yrr but fact is yrr mujhe past sa abb ajeeb lagta ha and ma kise ko sari bat batana sa bhot darta hu like bhot ultimately mujhe lagta fir batya acha dost bana fir khatam log chala jata ha hope tum log na jao <span class="emo emo-wiggle">🥺</span></p>
+
+      <p>Well yrr infact ik chiz jarur khena chaunga agar kabhi bhi ma khuch galat krta hu yrr muh pa bol diya kro khuch bhi mujhe hurt ya bura nhi lagta yrr itna mat socha kro infact mujhe acha lgta ha ki log mujhe change krna ki khosish krta ha and ik.acha insaan banana ki khosish krta ha well wo to tum logo pa ha abb for my side I never ask in return if you did I will do if you didnt I will still do not matter how far we are.</p>
+
+      <p>Well thoda likhta likhta off topic chalgya <span class="emo emo-bounce">😭😭</span></p>
+
+      <p>Har bar ki adat ha khuch jyada hi irritate krta hu ajeeb bata krta hu yarr mujhe khud ajeeb lagti ha agar ma sich ka bolu to ma chup hi ho jata hu <span class="emo emo-wiggle">🤣</span> well who cares not me hehhhe</p>
+
+      <p>Well yrr ik recently mera nature thoda ajeeb sa hogya ha especially 2nd year ma well yeh sabh khuch person life experiences ka karan hua ha jo I would say acha ha khatam hogya and abb train normal track pa ayegi ik to ajj kal ki reels or demotivate krti ha rat koi ayegi "jisko app priority manta ho kya wo apko priority manta ha" i mean wth <span class="emo emo-bounce">🤦‍♂️</span> or ma gadha isa bhi sochna lag jata hi yrr well chalo chodo kya bol sakta ha yeh bata to kabhi sath ma beth ka sout hogi esa message ma to bhot lambha chal jyega</p>
+
+      <p>Ohhh!! Wait mujhe idea aya website bana dunga heheh taki itna sara likh Saku insta pa nhi ayega and ha kise or ko mat bhejiyo especially mehak <span class="emo emo-bounce">😠</span> kahi wo bhi padh rahi ho well agar padh bhi rahi ho to <strong>"hello mehak"</strong> <span class="emo emo-wiggle">🤣</span> dm ma reply kr dena mujhe iska</p>
+
+      <!-- Fun Easter Egg Buttons -->
+      <div class="easter-egg-row">
+        <button class="btn-egg" onclick="openModal('mehak')">🤫 Secret Message for Mehak</button>
+        <button class="btn-egg" onclick="spawnBalloonsBatch(5)">🎈 Spawn Balloons</button>
+      </div>
+
+      <p>Well but yarr genuinely yrr bada maja aya tum dono sa milka. And yaar, ek baat aur, I don't think I've ever properly told you this, but I genuinely appreciate the kind of person you are. The way you make normal moments memorable, the way we can joke around over the most random things, and how comfortable our friendship has become means a lot to me. Maybe main har baar express nahi kar pata, but that doesn't mean I don't value it. I'm genuinely glad ki college mein tumse mila, aur I hope life tumhe woh sab de jo tum deserve karti ho. <span class="emo emo-bounce">❤️</span></p>
+
+      <p>Well infact first time ha bina socha hi type krta ja raha hu <span class="emo emo-bounce">😂</span></p>
+
+      <p>But really yarr past 2 year best things happened is meeting chutki and bhootni [ and also Gulabo also <span class="emo emo-wiggle">😂</span> usa kesa bhul sakta hu like wo banda bada majdar ha yarr isleye uska sath hu pata nhi ku dil sa tum logo ka best friend manta hu but yeah he is one tooo]</p>
+
+      <p>Abb baki ki bata kabhi or abhi happy birthday <span class="emo emo-spin">🎂</span> 🥳 3rd time or 4th time I dont remember <span class="emo emo-bounce">🤓😭</span></p>
+
+      <p class="poetic-quote">In fact i am type of person who don't measure our friendship by whether I'm always the first person you call or the person you spend the most time with. What we have doesn't need to compete to be meaningful. I love that our friendship has room for other people too.</p>
+
+      <p class="poetic-quote">And I hope your life keeps bringing you wonderful people to love, laugh with, and grow beside, because someone else becoming important to you will never make you less important to me..</p>
+
+      <p>I know I irritate you sometimes, I tease you without reason, I act childish, I get angry, but deep inside I know our bond is stronger than these small fights.</p>
+
+      <p class="poetic-quote">With you, I don't have to pretend.<br/>
+      I don't have to hide my tears.<br/>
+      I don't have to fake a smile.<br/>
+      —and that is the most beautiful feeling in this world.</p>
+
+      <p class="poetic-quote">I don't want a thousand friends,<br/>
+      I don't want a big circle,<br/>
+      I just want one person who stays — and that person is you.</p>
+
+      <p>No matter where life takes us, no matter how busy we become, promise me we will always find our way back to this pure, honest friendship.</p>
+
+      <p>Because having you in my life is one of the biggest blessings I will forever be thankful for.</p>
+
+      <p class="poetic-quote">You are not just my best friend...<br/>
+      <strong>You are my forever person.</strong> <span class="emo emo-bounce">🫶</span></p>
+
+      <p>Tujhe tang karne mein jo maza aata hai na mujhe, woh kisi aur ki tang khichna ma nahi aata <span class="emo emo-bounce">😂</span>.</p>
+
+      <p>But jokes apart, thank you for being such a genuine friend. Kabhi kabhi ajeeb lagti ha lakin overall you guys are the best <span class="emo emo-wiggle">👌</span></p>
+
+      <p>May your life be full of happiness, crazy memories, and endless smiles. Stay the same cute, annoying, and amazing bhootni and infact don of our group that we all love. Once again, Happy Birthday bhootni! 🥳</p>
+
+      <p>Is sa jayada likh nhi sakta that gya infact acha sa end krna bhi bhool gaya pata na kya khuch likh diya bas yahi bolunga.</p>
+
+      <p>Hope your achieve all your dreams this year you have dreamt off and baki ma or wo choti bachi nak ma dam krna wala to ha hi chal abb bas shukar bana mujhe neend a rahi ha ajj isleye jayada nhi likha and happy birthday 🎂 mujhe tha sabhi sath ma kahi jyega but mujhe nhi lagta jyega ma khosish krunga ki mehak bhi sath ho lakin hope hi kr sakta hu ik mujhe laga phela hi message likh deta hu bad ma time mila na mila dekhta ha kitni bhivashwani sach hoti ha <span class="emo emo-bounce">😂</span></p>
+
+      <p>Chal ab sach mein khatam karta hoon, warna birthday message ke naam par poori autobiography likh dunga <span class="emo emo-bounce">😂😭</span>. Bas yahi hope karta hoon ki iss saal tere saare dreams dheere-dheere poore hon, tu hamesha khush rahe, aur life tujhe bahut saari beautiful memories de.</p>
+
+      <p>Aur haan, <strong>next trip ka plan cancel mat karwana</strong>, mujhe genuinely tum sabke saath aur memories banani hain. Hopefully iss baar sab saath mein honge. <span class="emo emo-bounce">❤️</span></p>
+
+      <p>Stay the same cute, annoying, dramatic Bhootni and the don of our group. <span class="emo emo-wiggle">😂🫶</span></p>
+
+      <p><strong>Happy Birthday once again, Arshita!</strong> Thank you for being a part of some of my favourite memories. I hope we make many more together. <span class="emo emo-bounce">❤️🎂</span></p>
+
+      <p>Ab bas, jaa gift khol le... agar itna patience bacha hai toh. <span class="emo emo-bounce">😂😭</span></p>
+
+      <p style="text-align:center; font-family:'Caveat', cursive; font-size:2.2rem; color:#d81b60; margin-top:1.5rem;">
+        At last happy birthday bhootni !!! 🫶
+      </p>
+    </div>
+
+    <!-- Letter Signoff -->
+    <div class="letter-signoff">
+      Forever your annoying best friend 💫<br/>
+      — The one who always irritates you 😂
+    </div>
   </div>
+
+  <!-- Interactive Birthday Gift Patience Check -->
+  <div class="gift-patience-box">
+    <div class="gift-patience-title">🎁 Birthday Gift Status Check</div>
+    <p style="color: rgba(255,255,255,0.7); font-size: 0.95rem;">Mene bola tha na gift 28 ko hi kholna... sach bata khol liya na? 😂</p>
+    <div class="gift-btn-options">
+      <button class="btn-patience" onclick="openModal('gift_opened')">Haan khol liya! Patience kahan hai 😂</button>
+      <button class="btn-patience" onclick="openModal('gift_waiting')">Nahi, 28th ka wait kar rahi hoon 😇</button>
+    </div>
+  </div>
+
+  <!-- Back To Top Button -->
+  <button class="btn-back-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">⬆ Back to Top 😂</button>
+
 </div>
 
+<!-- Modal Dialog -->
+<div class="custom-modal" id="custom-modal" onclick="closeModal()">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <div class="modal-emoji" id="modal-emoji">👻</div>
+    <div class="modal-title" id="modal-title">Secret Message</div>
+    <div class="modal-body" id="modal-body">Text goes here</div>
+    <button class="btn-modal-close" onclick="closeModal()">Got it 😂</button>
+  </div>
+</div>
 
 <script>
 /* ============================================================
-   CANVAS PARTICLE SYSTEM
+   1. AMBIENT BACKGROUND & NEBULA CANVAS
    ============================================================ */
 const canvas = document.getElementById('bg-canvas');
-const ctx    = canvas.getContext('2d');
-let W, H, particles = [], mouse = { x: -1000, y: -1000 };
+const ctx = canvas.getContext('2d');
+let W, H;
+let stars = [];
 
-function resize() {
-  W = canvas.width  = window.innerWidth;
+function resizeCanvas() {
+  W = canvas.width = window.innerWidth;
   H = canvas.height = window.innerHeight;
 }
-resize();
-window.addEventListener('resize', resize);
-window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
-class Particle {
-  constructor() { this.reset(true); }
-  reset(init = false) {
-    this.x  = Math.random() * W;
-    this.y  = init ? Math.random() * H : H + 10;
-    this.r  = Math.random() * 2.5 + 0.5;
-    this.vx = (Math.random() - 0.5) * 0.3;
-    this.vy = -(Math.random() * 0.5 + 0.2);
-    this.a  = Math.random();
-    this.color = ['#ff6eb4','#ffd700','#a855f7','#60efff','#fff'][Math.floor(Math.random()*5)];
-    this.life = 0;
-    this.maxLife = Math.random() * 300 + 200;
+class Star {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * W;
+    this.y = Math.random() * H;
+    this.size = Math.random() * 2 + 0.4;
+    this.alpha = Math.random() * 0.8 + 0.2;
+    this.speed = Math.random() * 0.02 + 0.005;
+    this.color = ['#fff', '#ffd1dc', '#ffe4b5', '#c8b6ff'][Math.floor(Math.random() * 4)];
   }
   update() {
-    // Shy away from mouse
-    const dx = this.x - mouse.x, dy = this.y - mouse.y;
-    const d  = Math.sqrt(dx*dx + dy*dy);
-    if (d < 100) {
-      this.vx += (dx/d) * 0.4;
-      this.vy += (dy/d) * 0.4;
-    }
-    this.vx *= 0.98; this.vy *= 0.98;
-    this.x  += this.vx; this.y += this.vy;
-    this.life++;
-    this.a = Math.sin((this.life / this.maxLife) * Math.PI);
-    if (this.life > this.maxLife || this.y < -10) this.reset();
+    this.alpha += Math.sin(Date.now() * this.speed) * 0.015;
+    if (this.alpha < 0.1) this.alpha = 0.1;
+    if (this.alpha > 0.9) this.alpha = 0.9;
   }
   draw() {
     ctx.save();
-    ctx.globalAlpha = this.a * 0.7;
-    ctx.fillStyle   = this.color;
-    ctx.shadowColor = this.color;
-    ctx.shadowBlur  = 6;
+    ctx.globalAlpha = this.alpha;
+    ctx.fillStyle = this.color;
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }
 }
 
-// Create particles
-for (let i = 0; i < 160; i++) particles.push(new Particle());
+for (let i = 0; i < 140; i++) stars.push(new Star());
 
-// Draw gradient bg + nebula
-function drawBg() {
-  const grad = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W,H));
-  grad.addColorStop(0,   '#1a0035');
-  grad.addColorStop(0.5, '#0d001e');
-  grad.addColorStop(1,   '#050008');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, W, H);
+function renderBg() {
+  ctx.clearRect(0, 0, W, H);
+  stars.forEach(s => { s.update(); s.draw(); });
+  requestAnimationFrame(renderBg);
+}
+renderBg();
 
-  // Nebula blobs
-  [['rgba(155,0,200,0.06)',W*0.2,H*0.3],['rgba(255,50,120,0.05)',W*0.8,H*0.7],['rgba(80,0,180,0.04)',W*0.5,H*0.5]].forEach(([c,x,y]) => {
-    const g = ctx.createRadialGradient(x,y,0,x,y,Math.min(W,H)*0.4);
-    g.addColorStop(0, c); g.addColorStop(1, 'transparent');
-    ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+/* ============================================================
+   2. SPARKLE CURSOR / TOUCH TRAIL
+   ============================================================ */
+const sparkleIcons = ['✨', '💖', '🌸', '⭐', '💫'];
+let lastTrailTime = 0;
+function addTrail(x, y) {
+  const now = Date.now();
+  if (now - lastTrailTime < 60) return;
+  lastTrailTime = now;
+
+  const sp = document.createElement('div');
+  sp.className = 'trail-sparkle';
+  sp.textContent = sparkleIcons[Math.floor(Math.random() * sparkleIcons.length)];
+  sp.style.left = x + 'px';
+  sp.style.top = y + 'px';
+  document.body.appendChild(sp);
+  setTimeout(() => sp.remove(), 800);
+}
+window.addEventListener('mousemove', e => addTrail(e.clientX, e.clientY));
+window.addEventListener('touchmove', e => {
+  if (e.touches && e.touches[0]) {
+    addTrail(e.touches[0].clientX, e.touches[0].clientY);
+  }
+}, { passive: true });
+
+/* ============================================================
+   3. WEB AUDIO API SYNTHESIZER (No Audio File Needed!)
+   Plays gentle sweet music box chime of Happy Birthday
+   ============================================================ */
+let audioCtx = null;
+let isMusicPlaying = false;
+let musicTimer = null;
+
+// Happy Birthday melody notes: [frequency, duration in seconds]
+const melody = [
+  [261.63, 0.4], [261.63, 0.3], [293.66, 0.7], [261.63, 0.7], [349.23, 0.7], [329.63, 1.2],
+  [261.63, 0.4], [261.63, 0.3], [293.66, 0.7], [261.63, 0.7], [392.00, 0.7], [349.23, 1.2],
+  [261.63, 0.4], [261.63, 0.3], [523.25, 0.7], [440.00, 0.7], [349.23, 0.7], [329.63, 0.7], [293.66, 0.9],
+  [466.16, 0.4], [466.16, 0.3], [440.00, 0.7], [349.23, 0.7], [392.00, 0.7], [349.23, 1.3]
+];
+
+function playTone(freq, duration) {
+  if (!audioCtx) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+
+  osc.type = 'triangle'; // Sweet music-box like timbre
+  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+  gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  osc.start();
+  osc.stop(audioCtx.currentTime + duration);
+}
+
+function playMagicalChime() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const chimeNotes = [523.25, 659.25, 783.99, 1046.50];
+  chimeNotes.forEach((f, idx) => {
+    setTimeout(() => playTone(f, 0.6), idx * 100);
   });
 }
 
-function loop() {
-  ctx.clearRect(0, 0, W, H);
-  drawBg();
-  particles.forEach(p => { p.update(); p.draw(); });
-  requestAnimationFrame(loop);
+function startBirthdayTune() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+
+  isMusicPlaying = true;
+  document.getElementById('music-state-text').textContent = 'Tune: Playing 🎶';
+
+  let currentNote = 0;
+  function scheduleNext() {
+    if (!isMusicPlaying) return;
+    const [freq, dur] = melody[currentNote];
+    playTone(freq, dur);
+    currentNote = (currentNote + 1) % melody.length;
+    musicTimer = setTimeout(scheduleNext, (dur + 0.08) * 1000);
+  }
+  scheduleNext();
 }
-loop();
+
+function stopBirthdayTune() {
+  isMusicPlaying = false;
+  clearTimeout(musicTimer);
+  document.getElementById('music-state-text').textContent = 'Play Tune 🎵';
+}
+
+document.getElementById('music-toggle').addEventListener('click', () => {
+  if (isMusicPlaying) stopBirthdayTune();
+  else startBirthdayTune();
+});
 
 /* ============================================================
-   FLOATING EMOJIS
+   4. CELEBRATION CONFETTI
    ============================================================ */
-const FE_LIST = ['🎂','🥳','🎉','✨','💫','❤️','🌸','🎈','🎊','💕','🫶','🌟','🍰','🎁','🦋','🌺','💖','🎵','👻','🌈'];
-function spawnEmoji() {
-  const el = document.createElement('div');
-  el.className = 'fe';
-  el.textContent = FE_LIST[Math.floor(Math.random() * FE_LIST.length)];
-  const dur = Math.random() * 9 + 7, delay = Math.random() * 4;
-  el.style.cssText = `left:${Math.random()*100}%;font-size:${(Math.random()*1.3+0.7).toFixed(1)}rem;animation-duration:${dur}s;animation-delay:${delay}s;`;
-  document.body.appendChild(el);
-  setTimeout(() => el.remove(), (dur + delay + 1) * 1000);
-}
-setInterval(spawnEmoji, 350);
-for (let i = 0; i < 20; i++) setTimeout(spawnEmoji, i * 150);
-
-/* ============================================================
-   CONFETTI
-   ============================================================ */
-const CC = ['#ff3366','#ffd700','#00cfff','#ff80cc','#a855f7','#22c55e','#f97316','#ff6eb4'];
-function confetti(n = 120) {
-  for (let i = 0; i < n; i++) {
+const confettiColors = ['#ff4081', '#ffd700', '#00e5ff', '#ff80ab', '#b388ff', '#76ff03', '#ff6e40'];
+function fireConfetti(count = 100) {
+  for (let i = 0; i < count; i++) {
     setTimeout(() => {
-      const el = document.createElement('div');
-      el.className = 'cp';
-      const w = Math.random()*10+5, h = Math.random()*18+8;
-      el.style.cssText = `
-        left:${Math.random()*100}%;
-        background:${CC[Math.floor(Math.random()*CC.length)]};
-        width:${w}px; height:${h}px;
-        border-radius:${Math.random()>0.5?'50%':'2px'};
-        animation-duration:${(Math.random()*3+2.5).toFixed(1)}s;
-        animation-delay:${(Math.random()*0.8).toFixed(2)}s;
-      `;
-      document.body.appendChild(el);
-      setTimeout(() => el.remove(), 7000);
-    }, i * 25);
+      const p = document.createElement('div');
+      p.className = 'confetti-particle';
+      const sz = Math.random() * 9 + 6;
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.width = sz + 'px';
+      p.style.height = (sz * 1.5) + 'px';
+      p.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+      p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      p.style.animationDuration = (Math.random() * 2.5 + 2.5) + 's';
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 5500);
+    }, i * 20);
   }
 }
 
 /* ============================================================
-   SCREEN TRANSITIONS
+   5. INTERACTIVE BALLOONS (TAP TO POP!)
    ============================================================ */
-function unlockToEnvelope() {
-  const pScreen = document.getElementById('screen-password');
-  const eScreen = document.getElementById('screen-envelope');
+const balloonColors = ['🎈', '💖', '🌸', '🎁', '🎂'];
+function spawnBalloon() {
+  const el = document.createElement('div');
+  el.className = 'balloon-spawner';
+  el.textContent = balloonColors[Math.floor(Math.random() * balloonColors.length)];
+  el.style.left = (Math.random() * 86 + 7) + 'vw';
+  el.style.fontSize = (Math.random() * 1.2 + 2.2) + 'rem';
+  const dur = Math.random() * 7 + 8;
+  el.style.animationDuration = dur + 's';
 
-  pScreen.classList.add('hidden');
-  setTimeout(() => {
-    pScreen.classList.add('gone');
-    eScreen.classList.remove('gone');
-    setTimeout(() => {
-      eScreen.classList.remove('hidden');
-    }, 50);
-  }, 600);
+  // Tap to pop with sparkle & sound!
+  el.addEventListener('click', function(e) {
+    e.stopPropagation();
+    playTone(800 + Math.random() * 400, 0.2);
+    fireConfetti(25);
+    el.style.transform = 'scale(1.8)';
+    el.style.opacity = '0';
+    setTimeout(() => el.remove(), 200);
+  });
+
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), dur * 1000);
+}
+
+function spawnBalloonsBatch(n = 6) {
+  for (let i = 0; i < n; i++) {
+    setTimeout(spawnBalloon, i * 300);
+  }
 }
 
 /* ============================================================
-   PASSWORD LOGIC
+   6. SCREEN 1: PASSWORD VALIDATION
    ============================================================ */
 const PASSWORD = 'bhootni';
-const errEl    = document.getElementById('pw-error');
-const lockIcon = document.getElementById('lock-icon');
-const pwInputEl= document.getElementById('pw-input');
-const pwSubmit = document.getElementById('pw-submit');
+const pwInput = document.getElementById('pw-input');
+const btnUnlock = document.getElementById('btn-unlock');
+const pwError = document.getElementById('pw-error');
+const lockWrap = document.getElementById('lock-icon-wrap');
+const hintBtn = document.getElementById('hint-btn');
 
-function showError(msg) {
-  errEl.textContent = msg;
-  pwInputEl.classList.add('error');
-  const wrap = document.querySelector('.lock-wrap');
-  wrap.classList.remove('shake');
-  void wrap.offsetWidth;
-  wrap.classList.add('shake');
-  setTimeout(() => {
-    pwInputEl.value = '';
-    pwInputEl.classList.remove('error');
-    errEl.textContent = '';
-  }, 900);
-}
+function handleUnlock() {
+  const val = pwInput.value.trim().toLowerCase();
+  if (val === PASSWORD) {
+    // Success!
+    playMagicalChime();
+    lockWrap.classList.add('unlocked');
+    btnUnlock.textContent = 'Unlocked! ✨';
+    btnUnlock.style.background = '#2ed573';
+    fireConfetti(120);
 
-function checkPassword() {
-  const entered = pwInputEl.value.trim().toLowerCase();
-  if (entered === PASSWORD) {
-    lockIcon.classList.add('unlocked');
-    pwSubmit.textContent = '✅ Opening...';
-    pwSubmit.disabled = true;
-    const flash = document.getElementById('success-flash');
-    flash.classList.add('flash');
-    setTimeout(() => flash.classList.remove('flash'), 400);
-    confetti(150);
-    setTimeout(unlockToEnvelope, 1000);
+    // Auto-start soft birthday tune
+    if (!isMusicPlaying) startBirthdayTune();
+
+    setTimeout(() => {
+      // Transition from Password to Envelope
+      const pScreen = document.getElementById('screen-password');
+      const eScreen = document.getElementById('screen-envelope');
+
+      pScreen.classList.add('hidden');
+      setTimeout(() => {
+        pScreen.classList.add('gone');
+        eScreen.classList.remove('gone');
+        setTimeout(() => eScreen.classList.remove('hidden'), 50);
+      }, 600);
+    }, 1000);
   } else {
-    showError(entered === '' ? 'Please type the password 😅' : 'Wrong password! Try again 😛');
-    pwInputEl.focus();
+    // Error shake
+    pwError.textContent = val === '' ? 'Arre password toh daal do! 😂' : 'Galat password! Hint dekh lo 😏';
+    pwInput.classList.add('error');
+    playTone(150, 0.3);
+    setTimeout(() => pwInput.classList.remove('error'), 600);
   }
 }
 
-pwSubmit.addEventListener('click', checkPassword);
-pwInputEl.addEventListener('keydown', e => { if (e.key === 'Enter') checkPassword(); });
+btnUnlock.addEventListener('click', handleUnlock);
+pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleUnlock(); });
 
-// Auto-focus the input
-setTimeout(() => pwInputEl.focus(), 600);
+hintBtn.addEventListener('click', () => {
+  openModal('hint');
+});
+
+// Auto focus on load
+setTimeout(() => pwInput.focus(), 600);
 
 /* ============================================================
-   ENVELOPE LOGIC
+   7. SCREEN 2: 3D ENVELOPE OPENING
    ============================================================ */
-let envelopeOpened = false;
+let envelopeHasOpened = false;
 
-function spawnSparkle(x, y) {
-  const sparks = ['✨','⭐','💫','🌟'];
-  for (let i = 0; i < 5; i++) {
-    const el = document.createElement('div');
-    el.className = 'env-sparkle';
-    el.textContent = sparks[Math.floor(Math.random() * sparks.length)];
-    const angle = (Math.PI * 2 / 5) * i;
-    const dist  = 50 + Math.random() * 40;
-    el.style.cssText = `
-      left:${x}px; top:${y}px;
-      --tx:${Math.cos(angle)*dist}px;
-      --ty:${Math.sin(angle)*dist}px;
-      animation-delay:${i*0.07}s;
-    `;
-    document.getElementById('env-scene').appendChild(el);
-    setTimeout(() => el.remove(), 1600);
-  }
-}
+function triggerOpenEnvelope() {
+  if (envelopeHasOpened) return;
+  envelopeHasOpened = true;
 
-function openEnvelope() {
-  if (envelopeOpened) return;
-  envelopeOpened = true;
+  playMagicalChime();
 
-  const flap       = document.getElementById('env-flap');
-  const seal       = document.getElementById('env-seal');
-  const peek       = document.getElementById('env-peek');
-  const hint       = document.getElementById('click-hint');
-  const scene      = document.getElementById('env-scene');
-  const env3d      = document.getElementById('envelope-3d');
-  const envScreen  = document.getElementById('screen-envelope');
-  const letterView = document.getElementById('screen-letter');
+  const seal = document.getElementById('env-wax-seal');
+  const fold = document.getElementById('env-top-fold');
+  const peek = document.getElementById('env-peek-slip');
+  const envBox = document.getElementById('envelope-box');
+  const envScreen = document.getElementById('screen-envelope');
+  const letterScreen = document.getElementById('screen-letter');
 
-  // Sparkles at seal center
-  const rect = seal.getBoundingClientRect();
-  spawnSparkle(rect.left + rect.width/2 - scene.getBoundingClientRect().left,
-               rect.top  + rect.height/2 - scene.getBoundingClientRect().top);
+  // 1. Pop the seal
+  seal.classList.add('popped');
 
-  // Remove hover effect
-  scene.style.cursor = 'default';
+  // 2. Open top flap
+  setTimeout(() => fold.classList.add('open'), 180);
 
-  // Animate seal out
-  seal.classList.add('gone');
+  // 3. Peek letter out
+  setTimeout(() => peek.classList.add('peeked'), 450);
 
-  // Open flap after tiny delay
-  setTimeout(() => flap.classList.add('open'), 150);
-
-  // Rise letter peek
-  setTimeout(() => peek.classList.add('risen'), 400);
-
-  // Hide hint
-  hint.classList.add('gone');
-
-  // Fly envelope away
+  // 4. Confetti & envelope swoops away upward
   setTimeout(() => {
-    confetti(140);
-    env3d.style.transition = 'transform 0.8s ease, opacity 0.8s ease';
-    env3d.style.transform  = 'translateY(-120vh) rotate(15deg) scale(0.5)';
-    env3d.style.opacity    = '0';
+    fireConfetti(140);
+    envBox.style.transition = 'transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease';
+    envBox.style.transform = 'translateY(-120vh) scale(0.6) rotate(12deg)';
+    envBox.style.opacity = '0';
+  }, 950);
 
-    document.getElementById('env-title').style.transition = 'opacity 0.5s';
-    document.getElementById('env-title').style.opacity    = '0';
-    document.getElementById('env-subtitle').style.transition = 'opacity 0.5s';
-    document.getElementById('env-subtitle').style.opacity    = '0';
-  }, 850);
-
-  // Switch completely to Letter View
+  // 5. Switch to full reading experience (Zero glitch, 100% clean scroll!)
   setTimeout(() => {
-    // 1. Completely remove envelope screen from DOM layout
+    // Remove envelope screen from layout
     envScreen.classList.add('gone');
     envScreen.classList.add('hidden');
 
-    // 2. Unlock natural document scrolling
+    // Unlock natural window scrolling
     document.body.classList.remove('locked');
     document.body.classList.add('reading');
 
-    // 3. Activate letter at the very top
-    letterView.classList.add('active');
+    // Reveal letter at top
+    letterScreen.classList.add('active');
     window.scrollTo({ top: 0, behavior: 'instant' });
 
-    // 4. Celebration confetti burst!
-    setTimeout(() => confetti(100), 200);
-  }, 1550);
+    // Periodic balloons floating up while reading
+    setInterval(spawnBalloon, 4500);
+    spawnBalloonsBatch(5);
+  }, 1700);
+}
+
+/* ============================================================
+   8. EASTER EGGS & POPUPS
+   ============================================================ */
+const modal = document.getElementById('custom-modal');
+const modalEmoji = document.getElementById('modal-emoji');
+const modalTitle = document.getElementById('modal-title');
+const modalBody = document.getElementById('modal-body');
+
+const modalData = {
+  mehak: {
+    emoji: '😠👋',
+    title: 'Hello Mehak!',
+    body: 'Pakdi gayi! Hum jaante hain tu bhi ye letter padh rahi hai 🤣 Ab chup-chap DM mein reply kar dena aur plan cancel mat karwana agla trip ka! 😂'
+  },
+  hint: {
+    emoji: '💡',
+    title: 'Password Hint',
+    body: 'College ki sabse cute & dramatic don ka nickname... starting with B! (Hint: bhoot...)'
+  },
+  gift_opened: {
+    emoji: '🤣🎁',
+    title: 'Patience Level: ZERO!',
+    body: 'Maine bola tha na 28 ko hi kholna! Sach mein tu bilkul nahi ruki 😂 Kaisa laga gift jaldi bata DM mein!'
+  },
+  gift_waiting: {
+    emoji: '😇✨',
+    title: 'Wah! Itni Patience?!',
+    body: 'Arey wah, itna control?! Chal 28 ko kholna aur kholte hi reaction video ya message bhej dena! ❤️'
+  }
+};
+
+function openModal(key) {
+  const d = modalData[key];
+  if (!d) return;
+  modalEmoji.textContent = d.emoji;
+  modalTitle.textContent = d.title;
+  modalBody.innerHTML = d.body;
+  modal.classList.add('open');
+  playTone(550, 0.15);
+}
+
+function closeModal() {
+  modal.classList.remove('open');
 }
 </script>
+
 </body>
 </html>
