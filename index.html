@@ -123,65 +123,48 @@
       margin-top: -1rem;
     }
 
-    /* Input row */
-    .pw-input-wrap {
-      display: flex; gap: 0.6rem;
-      align-items: center;
+    /* Text input */
+    .pw-input-box {
+      width: min(300px, 88vw);
+      padding: 0.9rem 1.4rem;
+      background: rgba(255,255,255,0.06);
+      border: 2px solid rgba(255,110,180,0.4);
+      border-radius: 50px;
+      color: #fff;
+      font-size: 1.3rem;
+      font-family: 'Caveat', cursive;
+      letter-spacing: 0.2em;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      backdrop-filter: blur(10px);
     }
-    .pw-dots {
-      display: flex; gap: 0.5rem;
-    }
-    .pw-dot {
-      width: 14px; height: 14px;
-      border-radius: 50%;
-      border: 2px solid rgba(255,110,180,0.5);
-      background: transparent;
-      transition: all 0.2s;
-    }
-    .pw-dot.filled {
-      background: var(--pink);
+    .pw-input-box::placeholder { color: rgba(255,255,255,0.25); font-size: 1rem; letter-spacing: 0; }
+    .pw-input-box:focus {
       border-color: var(--pink);
-      box-shadow: 0 0 10px rgba(255,110,180,0.7);
+      box-shadow: 0 0 20px rgba(255,110,180,0.3);
+    }
+    .pw-input-box.error {
+      border-color: #ff5555;
+      box-shadow: 0 0 20px rgba(255,50,50,0.3);
     }
 
-    /* Keypad */
-    .keypad {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.7rem;
-      width: min(280px, 90vw);
-    }
-    .key {
-      aspect-ratio: 1;
-      border-radius: 50%;
-      border: 1.5px solid rgba(255,110,180,0.25);
-      background: rgba(255,255,255,0.04);
+    /* Submit button */
+    .pw-submit {
+      padding: 0.8rem 2.5rem;
+      background: linear-gradient(135deg, #ff6eb4, #9b2d7a);
+      border: none;
+      border-radius: 50px;
       color: #fff;
-      font-family: 'Inter', sans-serif;
-      font-size: 1.4rem;
-      font-weight: 300;
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
       cursor: pointer;
-      transition: all 0.15s;
-      backdrop-filter: blur(10px);
-      position: relative;
-      overflow: hidden;
+      transition: all 0.2s;
+      box-shadow: 0 4px 20px rgba(255,110,180,0.4);
+      letter-spacing: 0.05em;
     }
-    .key::before {
-      content: '';
-      position: absolute; inset: 0;
-      border-radius: 50%;
-      background: radial-gradient(circle at 50% 0%, rgba(255,110,180,0.3), transparent 70%);
-      opacity: 0;
-      transition: opacity 0.15s;
-    }
-    .key:hover::before { opacity: 1; }
-    .key:active { transform: scale(0.9); background: rgba(255,110,180,0.2); }
-    .key.wide {
-      border-radius: 30px;
-      grid-column: span 1;
-      font-size: 1rem;
-    }
-    .key.del { font-size: 1.2rem; }
+    .pw-submit:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(255,110,180,0.5); }
+    .pw-submit:active { transform: scale(0.96); }
 
     /* Error shake */
     .shake { animation: shake 0.5s ease; }
@@ -193,11 +176,11 @@
       80% { transform: translateX(8px); }
     }
     .pw-error {
-      font-size: 0.85rem;
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
       color: #ff5555;
-      height: 1.2rem;
+      min-height: 1.4rem;
       text-align: center;
-      transition: opacity 0.3s;
     }
 
     /* ===== SCREEN 2: ENVELOPE ===== */
@@ -586,34 +569,20 @@
       <div class="pw-hint">Hint: Teri ID hai ye 😏</div>
     </div>
 
-    <div class="pw-dots" id="pw-dots">
-      <div class="pw-dot" id="d0"></div>
-      <div class="pw-dot" id="d1"></div>
-      <div class="pw-dot" id="d2"></div>
-      <div class="pw-dot" id="d3"></div>
-      <div class="pw-dot" id="d4"></div>
-      <div class="pw-dot" id="d5"></div>
-      <div class="pw-dot" id="d6"></div>
-    </div>
+    <input
+      class="pw-input-box"
+      id="pw-input"
+      type="password"
+      placeholder="type the password..."
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="none"
+      spellcheck="false"
+    />
 
     <div class="pw-error" id="pw-error"></div>
 
-    <div class="keypad" id="keypad">
-      <!-- Letters -->
-      <button class="key" data-val="b">B</button>
-      <button class="key" data-val="h">H</button>
-      <button class="key" data-val="o">O</button>
-      <button class="key" data-val="t">T</button>
-      <button class="key" data-val="n">N</button>
-      <button class="key" data-val="i">I</button>
-      <button class="key" data-val="a">A</button>
-      <button class="key" data-val="r">R</button>
-      <button class="key" data-val="s">S</button>
-      <!-- Controls -->
-      <button class="key wide" data-val="CLEAR">Clear</button>
-      <button class="key wide" data-val="e">E</button>
-      <button class="key del wide" data-val="DEL">⌫</button>
-    </div>
+    <button class="pw-submit" id="pw-submit">Open 🔓</button>
   </div>
 </div>
 
@@ -905,81 +874,47 @@ function showScreen(id) {
    PASSWORD LOGIC
    ============================================================ */
 const PASSWORD = 'bhootni';
-let pwInput = '';
-let locked  = true;
-
-const dots    = document.querySelectorAll('.pw-dot');
-const errEl   = document.getElementById('pw-error');
-const lockIcon= document.getElementById('lock-icon');
-
-function updateDots() {
-  dots.forEach((d, i) => {
-    d.classList.toggle('filled', i < pwInput.length);
-  });
-}
+const errEl    = document.getElementById('pw-error');
+const lockIcon = document.getElementById('lock-icon');
+const pwInputEl= document.getElementById('pw-input');
+const pwSubmit = document.getElementById('pw-submit');
 
 function showError(msg) {
   errEl.textContent = msg;
+  pwInputEl.classList.add('error');
   const wrap = document.querySelector('.lock-wrap');
   wrap.classList.remove('shake');
-  void wrap.offsetWidth; // reflow
+  void wrap.offsetWidth;
   wrap.classList.add('shake');
-  // Red dots flash
-  dots.forEach(d => { if (d.classList.contains('filled')) { d.style.background = '#ff5555'; d.style.borderColor = '#ff5555'; } });
   setTimeout(() => {
-    dots.forEach(d => { d.style.background = ''; d.style.borderColor = ''; });
-    pwInput = '';
-    updateDots();
+    pwInputEl.value = '';
+    pwInputEl.classList.remove('error');
     errEl.textContent = '';
-  }, 800);
+  }, 900);
 }
 
 function checkPassword() {
-  if (pwInput.toLowerCase() === PASSWORD) {
-    // Success!
+  const entered = pwInputEl.value.trim().toLowerCase();
+  if (entered === PASSWORD) {
     lockIcon.classList.add('unlocked');
-    // Flash
+    pwSubmit.textContent = '✅ Opening...';
+    pwSubmit.disabled = true;
     const flash = document.getElementById('success-flash');
     flash.classList.add('flash');
     setTimeout(() => flash.classList.remove('flash'), 400);
     confetti(150);
-    setTimeout(() => {
-      showScreen('screen-envelope');
-    }, 1000);
+    setTimeout(() => showScreen('screen-envelope'), 1000);
   } else {
-    showError('Wrong password! Try again 😛');
+    showError(entered === '' ? 'Please type the password 😅' : 'Wrong password! Try again 😛');
+    pwInputEl.focus();
   }
 }
 
-document.querySelectorAll('.key').forEach(key => {
-  key.addEventListener('click', function(e) {
-    // Ripple
-    const ripple = document.createElement('div');
-    ripple.className = 'ripple';
-    const rect = this.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height);
-    ripple.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px;`;
-    this.appendChild(ripple);
-    setTimeout(() => ripple.remove(), 400);
+pwSubmit.addEventListener('click', checkPassword);
+pwInputEl.addEventListener('keydown', e => { if (e.key === 'Enter') checkPassword(); });
 
-    const val = this.dataset.val;
-    if (val === 'DEL') {
-      pwInput = pwInput.slice(0, -1);
-      updateDots();
-    } else if (val === 'CLEAR') {
-      pwInput = '';
-      updateDots();
-    } else {
-      if (pwInput.length < PASSWORD.length) {
-        pwInput += val;
-        updateDots();
-        if (pwInput.length === PASSWORD.length) {
-          setTimeout(checkPassword, 200);
-        }
-      }
-    }
-  });
-});
+// Auto-focus the input
+setTimeout(() => pwInputEl.focus(), 600);
 
 /* ============================================================
    ENVELOPE LOGIC
