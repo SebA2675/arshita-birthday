@@ -25,6 +25,16 @@
       overflow-x: hidden;
       color: #fff;
     }
+    body.locked {
+      overflow: hidden;
+      height: 100vh;
+    }
+    body.reading {
+      overflow-y: auto;
+      overflow-x: hidden;
+      min-height: 100vh;
+      height: auto;
+    }
 
     /* ===== CANVAS PARTICLES ===== */
     #bg-canvas {
@@ -37,12 +47,13 @@
       position: fixed; inset: 0; z-index: 10;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      transition: opacity 0.8s ease, transform 0.8s ease;
+      transition: opacity 0.6s ease, transform 0.6s ease;
     }
     .screen.hidden {
-      opacity: 0; pointer-events: none; transform: scale(1.05);
+      opacity: 0; pointer-events: none; transform: scale(0.96);
+      visibility: hidden;
     }
-    .screen.gone { display: none; }
+    .screen.gone { display: none !important; }
 
     /* ===== SCREEN 1: PASSWORD ===== */
     #screen-password {
@@ -326,13 +337,19 @@
 
     /* ===== SCREEN 3: LETTER ===== */
     #screen-letter {
-      position: relative; z-index: 10;
+      position: relative;
+      z-index: 10;
       background: transparent;
-      overflow-y: auto;
-      overflow-x: hidden;
-      padding: 3rem 1rem 5rem;
-      display: flex; flex-direction: column;
+      width: 100%;
+      min-height: 100vh;
+      padding: clamp(2rem, 5vw, 4rem) 1rem 5rem;
+      display: none;
+      flex-direction: column;
       align-items: center;
+      justify-content: flex-start;
+    }
+    #screen-letter.active {
+      display: flex;
     }
 
     .letter-entry { animation: letterEntry 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
@@ -547,7 +564,7 @@
     #success-flash.flash { opacity: 1; }
   </style>
 </head>
-<body>
+<body class="locked">
 
 <!-- Particle canvas -->
 <canvas id="bg-canvas"></canvas>
@@ -587,7 +604,7 @@
 </div>
 
 <!-- ===================== SCREEN 2: ENVELOPE ===================== -->
-<div class="screen hidden" id="screen-envelope">
+<div class="screen hidden gone" id="screen-envelope">
   <div class="inner">
     <div class="env-title" id="env-title">🎂 Happy Birthday, Arshita!</div>
     <div class="env-subtitle" id="env-subtitle">aka Bhootni, Don of our group 👻</div>
@@ -609,7 +626,7 @@
 </div>
 
 <!-- ===================== SCREEN 3: LETTER ===================== -->
-<div class="screen hidden" id="screen-letter">
+<div id="screen-letter">
   <div class="letter-entry" id="letter-wrap">
     <div class="letter-card">
       <div class="letter-glow"></div>
@@ -847,27 +864,20 @@ function confetti(n = 120) {
 }
 
 /* ============================================================
-   SCREEN MANAGER
+   SCREEN TRANSITIONS
    ============================================================ */
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => {
-    if (s.id === id) {
-      s.classList.remove('hidden', 'gone');
-    } else {
-      s.classList.add('hidden');
-      // Remove from flow after transition
-      setTimeout(() => { if (s.id !== id) s.classList.add('gone'); }, 850);
-    }
-  });
+function unlockToEnvelope() {
+  const pScreen = document.getElementById('screen-password');
+  const eScreen = document.getElementById('screen-envelope');
 
-  // Letter screen needs overflow
-  const letterScreen = document.getElementById('screen-letter');
-  if (id === 'screen-letter') {
-    letterScreen.style.overflowY = 'auto';
-    document.body.style.overflow = 'hidden'; // letter screen handles own scroll
-  } else {
-    document.body.style.overflow = 'hidden';
-  }
+  pScreen.classList.add('hidden');
+  setTimeout(() => {
+    pScreen.classList.add('gone');
+    eScreen.classList.remove('gone');
+    setTimeout(() => {
+      eScreen.classList.remove('hidden');
+    }, 50);
+  }, 600);
 }
 
 /* ============================================================
@@ -903,7 +913,7 @@ function checkPassword() {
     flash.classList.add('flash');
     setTimeout(() => flash.classList.remove('flash'), 400);
     confetti(150);
-    setTimeout(() => showScreen('screen-envelope'), 1000);
+    setTimeout(unlockToEnvelope, 1000);
   } else {
     showError(entered === '' ? 'Please type the password 😅' : 'Wrong password! Try again 😛');
     pwInputEl.focus();
@@ -944,11 +954,14 @@ function openEnvelope() {
   if (envelopeOpened) return;
   envelopeOpened = true;
 
-  const flap  = document.getElementById('env-flap');
-  const seal  = document.getElementById('env-seal');
-  const peek  = document.getElementById('env-peek');
-  const hint  = document.getElementById('click-hint');
-  const scene = document.getElementById('env-scene');
+  const flap       = document.getElementById('env-flap');
+  const seal       = document.getElementById('env-seal');
+  const peek       = document.getElementById('env-peek');
+  const hint       = document.getElementById('click-hint');
+  const scene      = document.getElementById('env-scene');
+  const env3d      = document.getElementById('envelope-3d');
+  const envScreen  = document.getElementById('screen-envelope');
+  const letterView = document.getElementById('screen-letter');
 
   // Sparkles at seal center
   const rect = seal.getBoundingClientRect();
@@ -970,31 +983,36 @@ function openEnvelope() {
   // Hide hint
   hint.classList.add('gone');
 
-  // After envelope animation, fire confetti, then transition to letter
+  // Fly envelope away
   setTimeout(() => {
-    confetti(160);
-    // Envelope flies away upward
-    const env3d = document.getElementById('envelope-3d');
-    const envScene = document.getElementById('screen-envelope');
+    confetti(140);
     env3d.style.transition = 'transform 0.8s ease, opacity 0.8s ease';
     env3d.style.transform  = 'translateY(-120vh) rotate(15deg) scale(0.5)';
     env3d.style.opacity    = '0';
 
-    // Fade out title/subtitle too
     document.getElementById('env-title').style.transition = 'opacity 0.5s';
     document.getElementById('env-title').style.opacity    = '0';
     document.getElementById('env-subtitle').style.transition = 'opacity 0.5s';
     document.getElementById('env-subtitle').style.opacity    = '0';
-  }, 900);
+  }, 850);
 
-  // Show letter
+  // Switch completely to Letter View
   setTimeout(() => {
-    showScreen('screen-letter');
-    // Scroll to top of letter
-    setTimeout(() => {
-      document.getElementById('screen-letter').scrollTop = 0;
-    }, 100);
-  }, 1700);
+    // 1. Completely remove envelope screen from DOM layout
+    envScreen.classList.add('gone');
+    envScreen.classList.add('hidden');
+
+    // 2. Unlock natural document scrolling
+    document.body.classList.remove('locked');
+    document.body.classList.add('reading');
+
+    // 3. Activate letter at the very top
+    letterView.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'instant' });
+
+    // 4. Celebration confetti burst!
+    setTimeout(() => confetti(100), 200);
+  }, 1550);
 }
 </script>
 </body>
